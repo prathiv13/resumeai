@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Resumora — Build. Optimize. Get Hired.</title>
@@ -161,8 +162,8 @@ a{color:#9eb7ff;text-decoration:none}
   <p class="section-sub">Start free. Upgrade when you need more.</p>
   <div class="pricing-grid">
     <div class="card"><h3>Free</h3><div class="price">₹0</div><p class="muted">3 ATS scans/day<br>Basic keyword analysis<br>Basic improvement tips</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="openAuth('signup')">Start free</button></div>
-    <div class="card highlight"><h3>Pro</h3><div class="price">₹149 <small>/ month</small></div><p class="muted">Unlimited scans<br>AI rewriting<br>Cover letters<br>LinkedIn optimization<br>PDF/DOCX export</p><button class="btn" style="margin-top:18px;width:100%" onclick="startPayment()">Upgrade to Pro</button></div>
-    <div class="card"><h3>One-time</h3><div class="price">₹299</div><p class="muted">Complete resume transformation<br>ATS optimization<br>Professional formatting<br>PDF + DOCX export</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="startPayment()">Get transformation</button></div>
+    <div class="card highlight"><h3>Pro</h3><div class="price">₹149 <small>/ month</small></div><p class="muted">Unlimited scans<br>AI rewriting<br>Cover letters<br>LinkedIn optimization<br>PDF/DOCX export</p><button class="btn" style="margin-top:18px;width:100%" onclick="startPayment('pro')">Upgrade to Pro</button></div>
+    <div class="card"><h3>One-time</h3><div class="price">₹299</div><p class="muted">Complete resume transformation<br>ATS optimization<br>Professional formatting<br>PDF + DOCX export</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="startPayment('transform')">Get transformation</button></div>
   </div>
   <p class="notice" style="text-align:center;margin-top:18px">Payment gateway integration is intentionally left server-side. Never put payment secrets or AI API keys in this HTML.</p>
 </div>
@@ -186,8 +187,11 @@ a{color:#9eb7ff;text-decoration:none}
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
 <script>
 const FREE_LIMIT=3;
+const PDFJS_CDN="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
 let mode='signup';
 const $=id=>document.getElementById(id);
 
@@ -211,21 +215,54 @@ function showAccount(){
 }
 function logout(){localStorage.removeItem('resumora_demo_account');$('dashboard').classList.remove('show')}
 
-$('fileInput').addEventListener('change',e=>{
- const f=e.target.files[0]; if(!f)return;
- const ok=['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
- if(!ok.includes(f.type)&&!/\.(pdf|doc|docx)$/i.test(f.name)){alert('Please choose a PDF, DOC or DOCX file.');return}
- $('fileName').textContent='Selected: '+f.name;
- // File extraction intentionally requires a backend/parser in production.
-});
+async function extractResumeFile(file){
+  if(!file) return;
+  const name=file.name.toLowerCase();
+  const allowed=/\.(pdf|doc|docx)$/i.test(name);
+  if(!allowed){ alert('Please choose a PDF, DOC or DOCX file.'); return; }
+
+  $('fileName').textContent='Reading: '+file.name+'…';
+  try{
+    let text='';
+    if(name.endsWith('.pdf')){
+      const pdfjs=await import(PDFJS_CDN);
+      pdfjs.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+      const data=await file.arrayBuffer();
+      const pdf=await pdfjs.getDocument({data}).promise;
+      const pages=[];
+      for(let i=1;i<=pdf.numPages;i++){
+        const page=await pdf.getPage(i);
+        const content=await page.getTextContent();
+        pages.push(content.items.map(item=>item.str||'').join(' '));
+      }
+      text=pages.join('\n\n');
+    }else if(window.mammoth){
+      const data=await file.arrayBuffer();
+      const result=await mammoth.extractRawText({arrayBuffer:data});
+      text=result.value||'';
+    }else{
+      throw new Error('DOC/DOCX reader could not be loaded.');
+    }
+
+    text=text.replace(/\r/g,'').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+    if(!text || text.length<20) throw new Error('No readable text was found. If the PDF is scanned/image-only, OCR is required.');
+    $('resumeInput').value=text;
+    $('fileName').textContent='✓ '+file.name+' — text extracted';
+  }catch(err){
+    $('fileName').textContent='Could not read '+file.name;
+    alert('Could not extract text from this file. '+(err.message||'Please try another PDF/DOC/DOCX.'));
+  }
+}
+
+$('fileInput').addEventListener('change',e=>extractResumeFile(e.target.files[0]));
 $('dropZone').addEventListener('dragover',e=>{e.preventDefault();$('dropZone').style.borderColor='rgba(91,140,255,.8)'});
 $('dropZone').addEventListener('dragleave',()=>{$('dropZone').style.borderColor='rgba(91,140,255,.35)'});
-$('dropZone').addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f){$('fileInput').files=e.dataTransfer.files;$('fileInput').dispatchEvent(new Event('change'))}});
+$('dropZone').addEventListener('drop',e=>{e.preventDefault();$('dropZone').style.borderColor='rgba(91,140,255,.35)';const f=e.dataTransfer.files[0];if(f)extractResumeFile(f);});
 
 function words(text){return [...new Set((text.toLowerCase().match(/[a-z][a-z+#.-]{2,}/g)||[]))]}
 function analyzeResume(){
  const resume=$('resumeInput').value.trim(),jd=$('jdInput').value.trim();
- if(!resume){alert('Please paste your resume text. PDF/DOC/DOCX upload UI is ready; connect a secure parser backend to extract its text.');return}
+ if(!resume){alert('Please upload a readable PDF/DOC/DOCX file or paste your resume text.');return}
  let used=getUsage();if(used>=FREE_LIMIT){alert('You have used the 3 free scans available in this browser today.');return}
  const r=words(resume),j=words(jd);
  const stop=new Set(['the','and','for','with','from','that','this','are','you','your','our','have','has','will','job','work','role','years','using','into','their','they','about','not','can','all','who','but','was','were','been','than','also','any','how','what']);
@@ -250,8 +287,81 @@ function analyzeResume(){
 function renderChips(id,arr,missing=false){$(id).innerHTML=arr.length?arr.map(x=>`<span class="chip ${missing?'missing':''}">${escapeHtml(x)}</span>`).join(''):'<span class="muted">None detected</span>'}
 function renderList(id,arr){$(id).innerHTML=arr.map(x=>`<div class="item">• ${escapeHtml(x)}</div>`).join('')}
 function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function startPayment(){
- alert('Payment checkout is not connected yet. The production version should create the order on your secure backend, open Razorpay/Cashfree/another supported gateway, verify the payment server-side, and then activate Pro.');
+async function startPayment(plan='pro') {
+  const plans = {
+    pro: { amount: 14900, name: 'Resumora Pro', description: 'Resumora Pro — monthly plan' },
+    transform: { amount: 29900, name: 'Resumora Resume Transformation', description: 'Resumora — one-time resume transformation' }
+  };
+  const selected = plans[plan] || plans.pro;
+  try {
+    const configResponse = await fetch('/api/config');
+    if (!configResponse.ok) throw new Error('Unable to load payment configuration.');
+    const config = await configResponse.json();
+
+    const orderResponse = await fetch('/api/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: selected.amount, currency: 'INR', receipt: `resumora_${Date.now()}` })
+    });
+    const orderData = await orderResponse.json();
+    if (!orderResponse.ok) throw new Error(orderData.error || 'Unable to create payment order.');
+
+    const options = {
+      key: config.key_id,
+      amount: orderData.amount,
+      currency: orderData.currency,
+      name: 'Resumora',
+      description: selected.description,
+      order_id: orderData.order_id,
+      prefill: {},
+      theme: { color: '#5b8cff' },
+      modal: {
+        ondismiss: function () {
+          showPaymentMessage('Payment cancelled. No payment was confirmed.', false);
+        }
+      },
+      handler: async function (response) {
+        try {
+          const verifyResponse = await fetch('/api/verify-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          });
+          const result = await verifyResponse.json();
+          if (!verifyResponse.ok || !result.success) throw new Error(result.error || 'Payment verification failed.');
+          showPaymentMessage(`Payment verified successfully. Payment ID: ${result.payment_id}`, true);
+        } catch (error) {
+          showPaymentMessage(error.message || 'Payment verification failed.', false);
+        }
+      }
+    };
+
+    const checkout = new Razorpay(options);
+    checkout.on('payment.failed', function (response) {
+      const reason = response.error && (response.error.description || response.error.reason);
+      showPaymentMessage(`Payment failed${reason ? ': ' + reason : '.'}`, false);
+    });
+    checkout.open();
+  } catch (error) {
+    showPaymentMessage(error.message || 'Unable to start payment.', false);
+  }
+}
+function showPaymentMessage(message, success) {
+  let el = document.getElementById('paymentMessage');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'paymentMessage';
+    el.style.cssText = 'position:fixed;right:18px;bottom:18px;z-index:200;padding:13px 16px;border-radius:12px;max-width:380px;background:#151b2b;border:1px solid rgba(255,255,255,.12);box-shadow:0 15px 40px rgba(0,0,0,.3);font-size:.85rem;';
+    document.body.appendChild(el);
+  }
+  el.style.color = success ? '#70e3bf' : '#ff9cad';
+  el.textContent = message;
+  clearTimeout(window.__paymentMessageTimer);
+  window.__paymentMessageTimer = setTimeout(() => el.remove(), 7000);
 }
 showAccount();
 </script>
