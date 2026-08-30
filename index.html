@@ -75,59 +75,6 @@ a{color:#9eb7ff;text-decoration:none}
 </style>
 </head>
 <body>
-<!-- Global Resumora Google Sign-In / Account UI -->
-<style>
-  #resumoraAccountBtn{
-    position:fixed;top:18px;right:20px;z-index:9998;
-    border:1px solid rgba(255,255,255,.16);background:rgba(15,15,20,.88);
-    color:inherit;padding:10px 15px;border-radius:999px;cursor:pointer;
-    backdrop-filter:blur(12px);font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.18)
-  }
-  #resumoraAccountBtn:hover{transform:translateY(-1px)}
-  #resumoraAuthModal{
-    display:none;position:fixed;inset:0;z-index:9999;
-    background:rgba(0,0,0,.62);align-items:center;justify-content:center;padding:20px
-  }
-  #resumoraAuthCard{
-    width:min(420px,100%);padding:30px;border-radius:24px;
-    background:#111217;color:#fff;border:1px solid rgba(255,255,255,.12);
-    box-shadow:0 24px 80px rgba(0,0,0,.45);position:relative;text-align:center
-  }
-  #resumoraAuthClose{
-    position:absolute;right:15px;top:12px;border:0;background:transparent;color:#aaa;
-    font-size:26px;cursor:pointer
-  }
-  #googleGlobalLogin{
-    width:100%;padding:13px 16px;border-radius:12px;border:1px solid #ddd;
-    background:#fff;color:#111;font-weight:800;cursor:pointer;font-size:15px
-  }
-  #resumoraUserPanel{display:none;margin-top:18px;text-align:left;padding:14px;border-radius:14px;background:rgba(255,255,255,.05)}
-  #resumoraUserAvatar{width:42px;height:42px;border-radius:50%;vertical-align:middle;margin-right:10px}
-  #resumoraSignOut{margin-top:14px;width:100%;padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:transparent;color:inherit;cursor:pointer}
-  @media(max-width:600px){#resumoraAccountBtn{top:12px;right:12px;padding:8px 12px;font-size:12px}}
-</style>
-
-<button id="resumoraAccountBtn" type="button">Sign in / Sign up</button>
-
-<div id="resumoraAuthModal" role="dialog" aria-modal="true" aria-labelledby="resumoraAuthTitle">
-  <div id="resumoraAuthCard">
-    <button id="resumoraAuthClose" type="button" aria-label="Close">×</button>
-    <div style="font-size:38px;margin-bottom:8px">👤</div>
-    <h2 id="resumoraAuthTitle" style="margin:0 0 8px">Welcome to Resumora</h2>
-    <p style="opacity:.72;margin:0 0 22px">Sign in or create your account securely with Google.</p>
-    <button id="googleGlobalLogin" type="button">Continue with Google</button>
-    <div id="resumoraUserPanel">
-      <div>
-        <img id="resumoraUserAvatar" alt="" src="">
-        <strong id="resumoraUserName"></strong>
-        <div id="resumoraUserEmail" style="opacity:.68;margin:5px 0 0 52px;font-size:13px"></div>
-      </div>
-      <button id="resumoraSignOut" type="button">Sign out</button>
-    </div>
-    <p style="font-size:12px;opacity:.5;margin:18px 0 0">Your Google session is remembered on this device.</p>
-  </div>
-</div>
-
 
 <nav>
   <div class="logo">Resumora</div>
@@ -238,8 +185,8 @@ a{color:#9eb7ff;text-decoration:none}
   <p class="section-sub">Start free. Upgrade when you need more.</p>
   <div class="pricing-grid">
     <div class="card"><h3>Free</h3><div class="price">₹0</div><p class="muted">3 ATS scans/day<br>Basic keyword analysis<br>Basic improvement tips</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="openAuth('signup')">Start free</button></div>
-    <div class="card highlight"><h3>Pro</h3><div class="price">₹149 <small>/ month</small></div><p class="muted">Unlimited scans<br>AI rewriting<br>Cover letters<br>LinkedIn optimization<br>PDF/DOCX export</p><button class="btn" style="margin-top:18px;width:100%" onclick="startPayment(\'pro\')">Upgrade to Pro</button></div>
-    <div class="card"><h3>One-time</h3><div class="price">₹299</div><p class="muted">Complete resume transformation<br>ATS optimization<br>Professional formatting<br>PDF + DOCX export</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="startPayment(\'transformation\')">Get transformation</button></div>
+    <div class="card highlight"><h3>Pro</h3><div class="price">₹149 <small>one-time</small></div><p class="muted">Unlimited scans<br>AI rewriting<br>Cover letters<br>LinkedIn optimization<br>PDF/DOCX export</p><button class="btn" style="margin-top:18px;width:100%" onclick="startPayment('pro')">Upgrade to Pro</button></div>
+    <div class="card"><h3>One-time</h3><div class="price">₹299</div><p class="muted">Complete resume transformation<br>ATS optimization<br>Professional formatting<br>PDF + DOCX export</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="startPayment('transformation')">Get transformation</button></div>
   </div>
   <p class="notice" style="text-align:center;margin-top:18px">Payments are handled by Razorpay-hosted Payment Links. No Razorpay secret is stored in this website.</p>
 </div>
@@ -259,6 +206,10 @@ a{color:#9eb7ff;text-decoration:none}
     <div class="form-group"><label>Email</label><input id="authEmail" type="email" placeholder="you@example.com"></div>
     <div class="form-group"><label>Password</label><input id="authPassword" type="password" placeholder="••••••••"></div>
     <div class="form-actions"><button class="btn secondary" onclick="closeAuth()">Cancel</button><button class="btn" onclick="submitAuth()">Continue</button></div>
+    <div style="display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--muted);font-size:.82rem">
+      <span style="height:1px;background:rgba(255,255,255,.12);flex:1"></span><span>OR</span><span style="height:1px;background:rgba(255,255,255,.12);flex:1"></span>
+    </div>
+    <button id="googleAuthMain" type="button" class="btn secondary" style="width:100%">Continue with Google</button>
     <div id="authMsg" class="notice"></div>
   </div>
 </div>
@@ -368,8 +319,9 @@ function startPayment(plan='pro'){
     pro: 'https://rzp.io/rzp/tp7rnMf',
     transformation: 'https://rzp.io/rzp/i8R5QAzA'
   };
-  const url = links[plan] || links.pro;
-  window.location.href = url;
+  const url = links[plan];
+  if (!url) return;
+  window.location.assign(url);
 }
 
 function showPaymentMessage(message, success) {
@@ -390,15 +342,6 @@ showAccount();
 
 <!-- Resumora Auth / Reviews / Admin integration -->
 <script type="module">
-  /*
-    Firebase setup:
-    1. Create a Firebase project.
-    2. Enable Authentication → Google.
-    3. Create Firestore Database.
-    4. Replace the values in firebaseConfig below with your Firebase Web App config.
-    5. Set Firestore Security Rules so only authenticated users can create reviews,
-       users can only edit their own data, and admin privileges are enforced by rules.
-  */
   const firebaseConfig = {
     apiKey: "AIzaSyDG3gzlvISNGySTCrzd3zuZyemrJSatp34",
     authDomain: "resumeai-3c29d.firebaseapp.com",
@@ -409,91 +352,178 @@ showAccount();
     measurementId: "G-PPN02969DJ"
   };
 
-  if (firebaseConfig.apiKey) {
+  // Expose one promise so buttons can safely wait for Firebase to finish loading.
+  window.resumoraFirebaseReady = (async () => {
     try {
       const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
-      const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } =
-        await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
-      const { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot, doc, setDoc } =
-        await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
+      const {
+        getAuth, GoogleAuthProvider, signInWithPopup, signOut,
+        onAuthStateChanged, setPersistence, browserLocalPersistence
+      } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
+      const {
+        getFirestore, collection, addDoc, serverTimestamp
+      } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
 
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getFirestore(app);
       const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
 
-      window.resumoraAuth = { auth, db, provider, signInWithPopup, signOut, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot, doc, setDoc };
+      await setPersistence(auth, browserLocalPersistence);
+
+      window.resumoraAuth = {
+        auth, db, provider, signInWithPopup, signOut,
+        collection, addDoc, serverTimestamp
+      };
 
       onAuthStateChanged(auth, user => {
         window.resumoraCurrentUser = user || null;
         document.dispatchEvent(new CustomEvent("resumora-auth-changed", { detail: user || null }));
       });
-    } catch (e) {
-      console.error("Firebase initialization failed:", e);
+
+      return window.resumoraAuth;
+    } catch (error) {
+      console.error("Resumora Firebase initialization failed:", error);
+      window.resumoraFirebaseError = error;
+      document.dispatchEvent(new CustomEvent("resumora-auth-error", { detail: error }));
+      throw error;
+    }
+  })();
+</script>
+
+<script>
+(function () {
+  const $id = id => document.getElementById(id);
+
+  function setGlobalAccountUI(user) {
+    const btn = $id("resumoraAccountBtn");
+    const panel = $id("resumoraUserPanel");
+    const loginBtn = $id("googleGlobalLogin");
+    const name = $id("resumoraUserName");
+    const email = $id("resumoraUserEmail");
+    const avatar = $id("resumoraUserAvatar");
+    const reviewLogin = $id("googleReviewLogin");
+    const reviewForm = $id("reviewForm");
+    const reviewStatus = $id("reviewAuthStatus");
+
+    if (user) {
+      if (btn) btn.textContent = "👤 " + (user.displayName || "Account").split(" ")[0];
+      if (loginBtn) loginBtn.style.display = "none";
+      if (panel) panel.style.display = "block";
+      if (name) name.textContent = user.displayName || "Resumora User";
+      if (email) email.textContent = user.email || "";
+      if (avatar) {
+        avatar.src = user.photoURL || "";
+        avatar.style.display = user.photoURL ? "inline-block" : "none";
+      }
+      if (reviewLogin) reviewLogin.style.display = "none";
+      if (reviewForm) reviewForm.style.display = "block";
+      if (reviewStatus) reviewStatus.textContent = "Signed in as " + (user.displayName || user.email);
+    } else {
+      if (btn) btn.textContent = "Sign in / Sign up";
+      if (loginBtn) loginBtn.style.display = "block";
+      if (panel) panel.style.display = "none";
+      if (reviewLogin) reviewLogin.style.display = "inline-block";
+      if (reviewForm) reviewForm.style.display = "none";
+      if (reviewStatus) reviewStatus.textContent = "Sign in to leave a review.";
     }
   }
-</script>
 
-<script>
-document.addEventListener("resumora-auth-changed", e => {
-  const user = e.detail;
-  const status = document.getElementById("reviewAuthStatus");
-  const form = document.getElementById("reviewForm");
-  const login = document.getElementById("googleReviewLogin");
-  if (!status) return;
-  if (user) {
-    status.textContent = `Signed in as ${user.displayName || user.email}`;
-    if (form) form.style.display = "block";
-    if (login) { login.textContent = "Sign in with another Google account"; }
-  } else {
-    status.textContent = "Sign in to leave a review.";
-    if (form) form.style.display = "none";
+  function openGlobalAuth() {
+    const modal = $id("resumoraAuthModal");
+    if (modal) modal.style.display = "flex";
   }
-});
-document.addEventListener("DOMContentLoaded", () => {
-  const login = document.getElementById("googleReviewLogin");
-  const submit = document.getElementById("submitReview");
-  if (login) login.onclick = () => {
-    const accountBtn = document.getElementById("resumoraAccountBtn");
-    if (accountBtn) accountBtn.click();
-  };
-  if (submit) submit.onclick = async () => {
-    const a = window.resumoraAuth, user = window.resumoraCurrentUser;
-    if (!a || !user) return alert("Please sign in with Google first.");
-    const text = document.getElementById("reviewText").value.trim();
-    const rating = Number(document.getElementById("reviewRating").value);
-    if (text.length < 5) return alert("Please write a little more about your experience.");
+
+  function closeGlobalAuth() {
+    const modal = $id("resumoraAuthModal");
+    if (modal) modal.style.display = "none";
+  }
+
+  async function signInGoogle() {
+    const status = $id("resumoraAuthStatus");
+    const buttons = [$id("googleGlobalLogin"), $id("googleAuthMain")].filter(Boolean);
+    buttons.forEach(b => { b.disabled = true; b.textContent = "Connecting to Google…"; });
+
     try {
-      await a.addDoc(a.collection(a.db, "reviews"), {
-        uid:user.uid, displayName:user.displayName || "Resumora User",
-        photoURL:user.photoURL || "", rating, text,
-        createdAt:a.serverTimestamp(), approved:false
-      });
-      document.getElementById("reviewText").value = "";
-      alert("Thanks! Your review was submitted for moderation.");
-    } catch(e) { alert(e.message || "Could not submit review."); }
-  };
-});
-</script>
-
-<script>
-document.addEventListener("resumora-auth-changed", e=>{
-  const user=e.detail || null;
-  const status=document.getElementById("reviewAuthStatus");
-  const form=document.getElementById("reviewForm");
-  const login=document.getElementById("googleReviewLogin");
-  if(!status) return;
-
-  if(user){
-    status.textContent=`Signed in as ${user.displayName || user.email}`;
-    if(form) form.style.display="block";
-    if(login) login.style.display="none";
-  }else{
-    status.textContent="Sign in to leave a review.";
-    if(form) form.style.display="none";
-    if(login) login.style.display="inline-block";
+      const authApi = await window.resumoraFirebaseReady;
+      await authApi.signInWithPopup(authApi.auth, authApi.provider);
+      closeGlobalAuth();
+    } catch (error) {
+      console.error("Google sign-in failed:", error);
+      const code = error && error.code ? " (" + error.code + ")" : "";
+      if (status) status.textContent = "Google sign-in failed" + code;
+      alert("Google sign-in failed" + code + ". Make sure Google is enabled in Firebase Authentication and your Vercel domain is in Authorized domains.");
+    } finally {
+      buttons.forEach(b => { b.disabled = false; b.textContent = "Continue with Google"; });
+    }
   }
-});
+
+  async function signOutUser() {
+    try {
+      const authApi = await window.resumoraFirebaseReady;
+      await authApi.signOut(authApi.auth);
+      closeGlobalAuth();
+    } catch (error) {
+      alert(error.message || "Could not sign out.");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const accountBtn = $id("resumoraAccountBtn");
+    const closeBtn = $id("resumoraAuthClose");
+    const modal = $id("resumoraAuthModal");
+    const globalGoogle = $id("googleGlobalLogin");
+    const mainGoogle = $id("googleAuthMain");
+    const signOut = $id("resumoraSignOut");
+    const reviewGoogle = $id("googleReviewLogin");
+    const submitReview = $id("submitReview");
+
+    if (accountBtn) accountBtn.addEventListener("click", openGlobalAuth);
+    if (closeBtn) closeBtn.addEventListener("click", closeGlobalAuth);
+    if (modal) modal.addEventListener("click", e => { if (e.target === modal) closeGlobalAuth(); });
+    if (globalGoogle) globalGoogle.addEventListener("click", signInGoogle);
+    if (mainGoogle) mainGoogle.addEventListener("click", signInGoogle);
+    if (signOut) signOut.addEventListener("click", signOutUser);
+
+    if (reviewGoogle) reviewGoogle.addEventListener("click", openGlobalAuth);
+
+    if (submitReview) submitReview.addEventListener("click", async () => {
+      try {
+        const a = await window.resumoraFirebaseReady;
+        const user = window.resumoraCurrentUser;
+        if (!user) return openGlobalAuth();
+
+        const text = ($id("reviewText")?.value || "").trim();
+        const rating = Number($id("reviewRating")?.value || 5);
+        if (text.length < 5) return alert("Please write at least 5 characters.");
+        if (rating < 1 || rating > 5) return alert("Please select a valid rating.");
+
+        await a.addDoc(a.collection(a.db, "reviews"), {
+          uid: user.uid,
+          displayName: user.displayName || "Resumora User",
+          photoURL: user.photoURL || "",
+          rating,
+          text,
+          createdAt: a.serverTimestamp(),
+          approved: false
+        });
+
+        $id("reviewText").value = "";
+        alert("Thanks! Your review was submitted for moderation.");
+      } catch (error) {
+        console.error(error);
+        alert(error.message || "Could not submit review.");
+      }
+    });
+  });
+
+  document.addEventListener("resumora-auth-changed", e => setGlobalAccountUI(e.detail || null));
+
+  document.addEventListener("resumora-auth-error", e => {
+    console.error("Firebase auth initialization error:", e.detail);
+  });
+})();
 </script>
 </body>
 </html>
