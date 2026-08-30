@@ -1,142 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Resumora — Build. Optimize. Get Hired.</title>
-  <meta name="description" content="Resumora helps job seekers build ATS-friendly resumes, analyze job matches and improve applications.">
+  <meta name="description" content="Resumora helps job seekers build ATS-friendly resumes, analyze job matches and improve applications." />
 
-  <!-- ✅ Google AdSense verification & ad script -->
-  <meta name="google-adsense-account" content="ca-pub-3788898744825788">
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-3788898744825788" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3788898744825788" crossorigin="anonymous"></script>
 
   <style>
-:root{
-  --bg:#080b14;--surface:#0f1422;--card:#151b2b;--border:rgba(255,255,255,.09);
-  --text:#f5f7fb;--muted:#9aa6ba;--blue:#5b8cff;--purple:#9b6cff;
-  --green:#28c997;--red:#ff647c;--yellow:#f4b740;--radius:18px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:
-radial-gradient(circle at 50% -10%,rgba(91,140,255,.18),transparent 38%),var(--bg);color:var(--text);line-height:1.6}
-button,input,textarea{font:inherit}
-button{cursor:pointer}
-nav{height:72px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);
-background:rgba(8,11,20,.82);backdrop-filter:blur(16px);position:sticky;top:0;z-index:20}
-.logo{font-size:1.45rem;font-weight:900;letter-spacing:-.04em;background:linear-gradient(110deg,var(--blue),var(--purple));
--webkit-background-clip:text;background-clip:text;color:transparent}
-.nav-actions{display:flex;gap:10px}
-.btn{border:0;border-radius:11px;padding:10px 16px;font-weight:750;color:white;background:linear-gradient(110deg,#4078ff,#8d58ee)}
-.btn.secondary{background:rgba(255,255,255,.06);border:1px solid var(--border)}
-.btn.large{padding:14px 22px;font-size:1rem}
-.hero{max-width:1050px;margin:auto;text-align:center;padding:80px 20px 45px}
-.badge{display:inline-flex;padding:6px 12px;border:1px solid rgba(91,140,255,.3);border-radius:30px;color:#a9c1ff;background:rgba(91,140,255,.08);font-size:.78rem;font-weight:800}
-h1{font-size:clamp(2.5rem,7vw,5rem);line-height:1.02;letter-spacing:-.06em;margin:22px auto 20px;max-width:850px}
-.gradient{background:linear-gradient(110deg,#fff 25%,#9db7ff 52%,#bd98ff 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{max-width:650px;margin:auto;color:var(--muted);font-size:1.08rem}
-.hero-cta{margin-top:28px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.tool{max-width:1050px;margin:auto;padding:20px}
-.card{background:rgba(21,27,43,.82);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.16)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:780px){.grid{grid-template-columns:1fr}}
-.label{font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:850;margin-bottom:9px}
-textarea,input{width:100%;border:1px solid var(--border);background:rgba(255,255,255,.035);color:var(--text);border-radius:12px;padding:13px;outline:none}
-textarea:focus,input:focus{border-color:rgba(91,140,255,.6);box-shadow:0 0 0 3px rgba(91,140,255,.1)}
-textarea{min-height:280px;resize:vertical}
-.upload{border:1.5px dashed rgba(91,140,255,.35);border-radius:14px;padding:28px;text-align:center;background:rgba(91,140,255,.04);margin-bottom:12px}
-.upload strong{display:block;font-size:1rem}.upload span{display:block;color:var(--muted);font-size:.82rem;margin:5px 0 13px}
-#fileInput{display:none}
-.file-name{font-size:.82rem;color:#a9c1ff;margin-top:9px;min-height:20px}
-.notice{font-size:.76rem;color:var(--muted);margin-top:10px}
-.analyze{width:100%;margin-top:18px}
-.results{display:none;margin-top:18px}
-.score{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-.score-num{font-size:3.2rem;font-weight:950;line-height:1;background:linear-gradient(110deg,var(--blue),var(--purple));
--webkit-background-clip:text;background-clip:text;color:transparent}
-.pill{display:inline-block;border-radius:30px;padding:4px 10px;font-size:.75rem;font-weight:800;background:rgba(40,201,151,.1);color:#70e3bf}
-.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
-@media(max-width:780px){.result-grid{grid-template-columns:1fr}}
-.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{padding:5px 9px;border-radius:20px;font-size:.75rem;background:rgba(91,140,255,.1);border:1px solid rgba(91,140,255,.18);color:#b7c9ff}
-.chip.missing{background:rgba(255,100,124,.08);border-color:rgba(255,100,124,.18);color:#ff9cad}
-.item{padding:10px 0;border-bottom:1px solid var(--border);font-size:.88rem}.item:last-child{border-bottom:0}
-.section{padding:75px 20px}.section-inner{max-width:1050px;margin:auto}
-.section-title{text-align:center;font-size:2rem;letter-spacing:-.035em}.section-sub{text-align:center;color:var(--muted);max-width:620px;margin:8px auto 30px}
-.feature-grid,.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-@media(max-width:850px){.feature-grid,.pricing-grid{grid-template-columns:1fr}}
-.feature h3{margin:10px 0 4px}.feature p{color:var(--muted);font-size:.86rem}
-.price{font-size:2rem;font-weight:900;margin:10px 0}.price small{font-size:.8rem;color:var(--muted);font-weight:500}
-.highlight{border-color:rgba(155,108,255,.45);box-shadow:0 0 40px rgba(155,108,255,.08)}
-footer{border-top:1px solid var(--border);padding:35px 20px;text-align:center;color:var(--muted);font-size:.8rem}
-footer b{color:var(--text)}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
-.modal.show{display:flex}.modal-card{width:min(430px,100%);background:#111725;border:1px solid var(--border);border-radius:20px;padding:25px}
-.modal-card h2{margin-bottom:4px}.modal-card p{color:var(--muted);font-size:.84rem;margin-bottom:18px}
-.form-group{margin-bottom:12px}.form-group label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:5px}
-.form-actions{display:flex;gap:9px;margin-top:15px}.form-actions button{flex:1}
-.dashboard{display:none;margin-top:18px}.dashboard.show{display:block}
-.account{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
-small.muted{color:var(--muted)}
-a{color:#9eb7ff;text-decoration:none}
-</style>
+    /* ===== all your existing styles (unchanged) ===== */
+    :root {
+      --bg: #080b14;
+      --surface: #0f1422;
+      --card: #151b2b;
+      --border: rgba(255,255,255,.09);
+      --text: #f5f7fb;
+      --muted: #9aa6ba;
+      --blue: #5b8cff;
+      --purple: #9b6cff;
+      --green: #28c997;
+      --red: #ff647c;
+      --yellow: #f4b740;
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 50% -10%, rgba(91,140,255,.18), transparent 38%), var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    nav {
+      height: 72px;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,11,20,.82);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .logo {
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      background: linear-gradient(110deg, var(--blue), var(--purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .nav-actions { display: flex; gap: 10px; }
+    .btn {
+      border: 0;
+      border-radius: 11px;
+      padding: 10px 16px;
+      font-weight: 750;
+      color: white;
+      background: linear-gradient(110deg, #4078ff, #8d58ee);
+    }
+    .btn.secondary { background: rgba(255,255,255,.06); border: 1px solid var(--border); }
+    .btn.large { padding: 14px 22px; font-size: 1rem; }
+    .hero {
+      max-width: 1050px;
+      margin: auto;
+      text-align: center;
+      padding: 80px 20px 45px;
+    }
+    .badge {
+      display: inline-flex;
+      padding: 6px 12px;
+      border: 1px solid rgba(91,140,255,.3);
+      border-radius: 30px;
+      color: #a9c1ff;
+      background: rgba(91,140,255,.08);
+      font-size: .78rem;
+      font-weight: 800;
+    }
+    h1 {
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      line-height: 1.02;
+      letter-spacing: -.06em;
+      margin: 22px auto 20px;
+      max-width: 850px;
+    }
+    .gradient {
+      background: linear-gradient(110deg, #fff 25%, #9db7ff 52%, #bd98ff 80%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero p { max-width: 650px; margin: auto; color: var(--muted); font-size: 1.08rem; }
+    .hero-cta { margin-top: 28px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .tool { max-width: 1050px; margin: auto; padding: 20px; }
+    .card {
+      background: rgba(21,27,43,.82);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.16);
+    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 780px) { .grid { grid-template-columns: 1fr; } }
+    .label {
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: var(--muted);
+      font-weight: 850;
+      margin-bottom: 9px;
+    }
+    textarea, input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.035);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 13px;
+      outline: none;
+    }
+    textarea:focus, input:focus { border-color: rgba(91,140,255,.6); box-shadow: 0 0 0 3px rgba(91,140,255,.1); }
+    textarea { min-height: 280px; resize: vertical; }
+    .upload {
+      border: 1.5px dashed rgba(91,140,255,.35);
+      border-radius: 14px;
+      padding: 28px;
+      text-align: center;
+      background: rgba(91,140,255,.04);
+      margin-bottom: 12px;
+    }
+    .upload strong { display: block; font-size: 1rem; }
+    .upload span { display: block; color: var(--muted); font-size: .82rem; margin: 5px 0 13px; }
+    #fileInput { display: none; }
+    .file-name { font-size: .82rem; color: #a9c1ff; margin-top: 9px; min-height: 20px; }
+    .notice { font-size: .76rem; color: var(--muted); margin-top: 10px; }
+    .analyze { width: 100%; margin-top: 18px; }
+    .results { display: none; margin-top: 18px; }
+    .score { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+    .score-num {
+      font-size: 3.2rem;
+      font-weight: 950;
+      line-height: 1;
+      background: linear-gradient(110deg, var(--blue), var(--purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .pill {
+      display: inline-block;
+      border-radius: 30px;
+      padding: 4px 10px;
+      font-size: .75rem;
+      font-weight: 800;
+      background: rgba(40,201,151,.1);
+      color: #70e3bf;
+    }
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+    @media (max-width: 780px) { .result-grid { grid-template-columns: 1fr; } }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip {
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: .75rem;
+      background: rgba(91,140,255,.1);
+      border: 1px solid rgba(91,140,255,.18);
+      color: #b7c9ff;
+    }
+    .chip.missing { background: rgba(255,100,124,.08); border-color: rgba(255,100,124,.18); color: #ff9cad; }
+    .item { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .88rem; }
+    .item:last-child { border-bottom: 0; }
+    .section { padding: 75px 20px; }
+    .section-inner { max-width: 1050px; margin: auto; }
+    .section-title { text-align: center; font-size: 2rem; letter-spacing: -.035em; }
+    .section-sub { text-align: center; color: var(--muted); max-width: 620px; margin: 8px auto 30px; }
+    .feature-grid, .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 850px) { .feature-grid, .pricing-grid { grid-template-columns: 1fr; } }
+    .feature h3 { margin: 10px 0 4px; }
+    .feature p { color: var(--muted); font-size: .86rem; }
+    .price { font-size: 2rem; font-weight: 900; margin: 10px 0; }
+    .price small { font-size: .8rem; color: var(--muted); font-weight: 500; }
+    .highlight { border-color: rgba(155,108,255,.45); box-shadow: 0 0 40px rgba(155,108,255,.08); }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 35px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+    footer b { color: var(--text); }
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+    .modal.show { display: flex; }
+    .modal-card {
+      width: min(430px, 100%);
+      background: #111725;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 25px;
+    }
+    .modal-card h2 { margin-bottom: 4px; }
+    .modal-card p { color: var(--muted); font-size: .84rem; margin-bottom: 18px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: 5px; }
+    .form-actions { display: flex; gap: 9px; margin-top: 15px; }
+    .form-actions button { flex: 1; }
+    .dashboard { display: none; margin-top: 18px; }
+    .dashboard.show { display: block; }
+    .account { display: flex; justify-content: space-between; gap: 15px; align-items: center; flex-wrap: wrap; }
+    small.muted { color: var(--muted); }
+    a { color: #9eb7ff; text-decoration: none; }
 
-<style id="resumora-auth-toast-style">
-#resumoraAuthToast{
-  position:fixed;
-  top:78px;
-  right:22px;
-  z-index:10050;
-  display:none;
-  align-items:center;
-  gap:10px;
-  max-width:min(380px,calc(100vw - 44px));
-  padding:14px 18px;
-  border-radius:14px;
-  background:rgba(20,25,32,.96);
-  color:#fff;
-  border:1px solid rgba(255,255,255,.14);
-  box-shadow:0 14px 40px rgba(0,0,0,.35);
-  font-weight:700;
-  font-size:14px;
-  animation:resumoraToastIn .25s ease;
-}
-#resumoraAuthToast .toast-check{
-  width:25px;height:25px;border-radius:50%;
-  display:grid;place-items:center;
-  background:#20b26b;color:#fff;font-size:15px;flex:0 0 auto;
-}
-@keyframes resumoraToastIn{
-  from{opacity:0;transform:translateY(-10px)}
-  to{opacity:1;transform:translateY(0)}
-}
-</style>
+    #resumoraAuthToast {
+      position: fixed;
+      top: 78px;
+      right: 22px;
+      z-index: 10050;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      max-width: min(380px, calc(100vw - 44px));
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: rgba(20,25,32,.96);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+      font-weight: 700;
+      font-size: 14px;
+      animation: resumoraToastIn .25s ease;
+    }
+    #resumoraAuthToast .toast-check {
+      width: 25px; height: 25px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #20b26b;
+      color: #fff;
+      font-size: 15px;
+      flex: 0 0 auto;
+    }
+    @keyframes resumoraToastIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-<style id="resumora-admin-style">
-#resumoraAdminBtn{display:none}
-#resumoraAdminPanel{
-  display:none;position:fixed;inset:0;z-index:10020;background:rgba(0,0,0,.78);
-  align-items:center;justify-content:center;padding:18px
-}
-.admin-card{
-  width:min(1050px,100%);max-height:90vh;overflow:auto;background:#111725;
-  border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:24px;
-  box-shadow:0 30px 100px rgba(0,0,0,.5)
-}
-.admin-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}
-.admin-head h2{margin:0}.admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.admin-stat{background:rgba(255,255,255,.045);border:1px solid var(--border);border-radius:15px;padding:16px}
-.admin-stat strong{display:block;font-size:1.7rem}.admin-stat span{color:var(--muted);font-size:.78rem}
-.admin-note{margin-top:16px;padding:14px;border-radius:12px;background:rgba(244,183,64,.08);border:1px solid rgba(244,183,64,.18);color:#f4d27d;font-size:.82rem}
-@media(max-width:800px){.admin-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:500px){.admin-grid{grid-template-columns:1fr}}
-</style>
+    #resumoraAdminBtn { display: none; }
+    #resumoraAdminPanel {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10020;
+      background: rgba(0,0,0,.78);
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .admin-card {
+      width: min(1050px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: #111725;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 30px 100px rgba(0,0,0,.5);
+    }
+    .admin-head { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px; }
+    .admin-head h2 { margin: 0; }
+    .admin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .admin-stat { background: rgba(255,255,255,.045); border: 1px solid var(--border); border-radius: 15px; padding: 16px; }
+    .admin-stat strong { display: block; font-size: 1.7rem; }
+    .admin-stat span { color: var(--muted); font-size: .78rem; }
+    .admin-note { margin-top: 16px; padding: 14px; border-radius: 12px; background: rgba(244,183,64,.08); border: 1px solid rgba(244,183,64,.18); color: #f4d27d; font-size: .82rem; }
+    @media (max-width: 800px) { .admin-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .admin-grid { grid-template-columns: 1fr; } }
 
+    /* Razorpay Payment Button styling – makes it blend with your theme */
+    .razorpay-payment-button {
+      display: inline-block;
+      width: 100%;
+      margin-top: 18px;
+      border: 0 !important;
+      border-radius: 11px !important;
+      padding: 14px 22px !important;
+      font-weight: 750 !important;
+      font-size: 1rem !important;
+      color: white !important;
+      background: linear-gradient(110deg, #4078ff, #8d58ee) !important;
+      cursor: pointer !important;
+      text-align: center !important;
+      transition: opacity 0.2s;
+    }
+    .razorpay-payment-button:hover {
+      opacity: 0.85;
+    }
+    .razorpay-payment-button:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    /* Remove default margin/padding from form */
+    .pricing-grid form {
+      margin: 0;
+    }
+  </style>
 </head>
 <body>
+
 <div id="resumoraAuthToast" role="status" aria-live="polite">
   <span class="toast-check">✓</span>
   <span id="resumoraAuthToastText">Successfully logged in!</span>
 </div>
-
 
 <nav>
   <div class="logo">Resumora</div>
@@ -166,7 +354,7 @@ a{color:#9eb7ff;text-decoration:none}
           <strong>📄 Upload PDF, DOC or DOCX</strong>
           <span>Drag & drop your file here, or choose a file</span>
           <label class="btn secondary" for="fileInput">Choose resume</label>
-          <input id="fileInput" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+          <input id="fileInput" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
           <div class="file-name" id="fileName"></div>
         </div>
         <textarea id="resumeInput" placeholder="Or paste your resume text here..."></textarea>
@@ -205,54 +393,81 @@ a{color:#9eb7ff;text-decoration:none}
     </div>
   </div>
 
-<section id="reviewsSection" style="max-width:980px;margin:70px auto;padding:0 20px">
-  <div style="text-align:center;margin-bottom:28px">
-    <div class="eyebrow">COMMUNITY</div>
-    <h2 style="font-size:clamp(2rem,4vw,3rem);margin:8px 0">What users say</h2>
-    <p style="opacity:.7">Signed-in users can share their experience with Resumora.</p>
-  </div>
-  <div id="reviewAuthBox" style="padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:20px">
-    <button class="btn btn-primary" id="googleReviewLogin">Continue with Google</button>
-    <span id="reviewAuthStatus" style="margin-left:10px;opacity:.7"></span>
-  </div>
-  <div id="reviewForm" style="display:none;padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:25px">
-    <label>Rating</label>
-    <select id="reviewRating" style="margin:8px 0 14px;padding:10px;border-radius:10px">
-      <option value="5">★★★★★ — Excellent</option><option value="4">★★★★☆ — Great</option>
-      <option value="3">★★★☆☆ — Good</option><option value="2">★★☆☆☆ — Needs improvement</option>
-      <option value="1">★☆☆☆☆ — Poor</option>
-    </select>
-    <label>Your review</label>
-    <textarea id="reviewText" maxlength="800" rows="4" placeholder="Tell us about your experience…" style="width:100%;margin:8px 0 14px;padding:12px;border-radius:10px"></textarea>
-    <button class="btn btn-primary" id="submitReview">Post review</button>
-  </div>
-  <div id="reviewsList"></div>
-</section>
+  <section id="reviewsSection" style="max-width:980px;margin:70px auto;padding:0 20px">
+    <div style="text-align:center;margin-bottom:28px">
+      <div class="eyebrow">COMMUNITY</div>
+      <h2 style="font-size:clamp(2rem,4vw,3rem);margin:8px 0">What users say</h2>
+      <p style="opacity:.7">Signed-in users can share their experience with Resumora.</p>
+    </div>
+    <div id="reviewAuthBox" style="padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:20px">
+      <button class="btn" id="googleReviewLogin">Continue with Google</button>
+      <span id="reviewAuthStatus" style="margin-left:10px;opacity:.7"></span>
+    </div>
+    <div id="reviewForm" style="display:none;padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:25px">
+      <label>Rating</label>
+      <select id="reviewRating" style="margin:8px 0 14px;padding:10px;border-radius:10px">
+        <option value="5">★★★★★ — Excellent</option>
+        <option value="4">★★★★☆ — Great</option>
+        <option value="3">★★★☆☆ — Good</option>
+        <option value="2">★★☆☆☆ — Needs improvement</option>
+        <option value="1">★☆☆☆☆ — Poor</option>
+      </select>
+      <label>Your review</label>
+      <textarea id="reviewText" maxlength="800" rows="4" placeholder="Tell us about your experience…" style="width:100%;margin:8px 0 14px;padding:12px;border-radius:10px"></textarea>
+      <button class="btn" id="submitReview">Post review</button>
+    </div>
+    <div id="reviewsList"></div>
+  </section>
 </main>
 
 <section class="section">
-<div class="section-inner">
-  <h2 class="section-title">Everything you need to get hired</h2>
-  <p class="section-sub">Resumora is designed to grow from an ATS checker into a complete career toolkit.</p>
-  <div class="feature-grid">
-    <div class="card feature"><div style="font-size:1.7rem">🎯</div><h3>ATS Analysis</h3><p>See strengths, gaps and job-description keyword alignment.</p></div>
-    <div class="card feature"><div style="font-size:1.7rem">✍️</div><h3>AI Resume Rewrite</h3><p>Transform weak bullets and summaries into stronger, achievement-focused copy.</p></div>
-    <div class="card feature"><div style="font-size:1.7rem">💼</div><h3>Career Toolkit</h3><p>Expand into cover letters, LinkedIn optimization and interview preparation.</p></div>
+  <div class="section-inner">
+    <h2 class="section-title">Everything you need to get hired</h2>
+    <p class="section-sub">Resumora is designed to grow from an ATS checker into a complete career toolkit.</p>
+    <div class="feature-grid">
+      <div class="card feature"><div style="font-size:1.7rem">🎯</div><h3>ATS Analysis</h3><p>See strengths, gaps and job-description keyword alignment.</p></div>
+      <div class="card feature"><div style="font-size:1.7rem">✍️</div><h3>AI Resume Rewrite</h3><p>Transform weak bullets and summaries into stronger, achievement-focused copy.</p></div>
+      <div class="card feature"><div style="font-size:1.7rem">💼</div><h3>Career Toolkit</h3><p>Expand into cover letters, LinkedIn optimization and interview preparation.</p></div>
+    </div>
   </div>
-</div>
 </section>
 
+<!-- ===== PRICING SECTION – RAZORPAY PAYMENT BUTTONS ===== -->
 <section class="section" style="padding-top:15px">
-<div class="section-inner">
-  <h2 class="section-title">Simple pricing</h2>
-  <p class="section-sub">Start free. Upgrade when you need more.</p>
-  <div class="pricing-grid">
-    <div class="card"><h3>Free</h3><div class="price">₹0</div><p class="muted">3 ATS scans/day<br>Basic keyword analysis<br>Basic improvement tips</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="openAuth('signup')">Start free</button></div>
-    <div class="card highlight"><h3>Pro</h3><div class="price">₹149 <small>one-time</small></div><p class="muted">Unlimited scans<br>AI rewriting<br>Cover letters<br>LinkedIn optimization<br>PDF/DOCX export</p><button class="btn" style="margin-top:18px;width:100%" onclick="startPayment('pro')">Upgrade to Pro</button></div>
-    <div class="card"><h3>One-time</h3><div class="price">₹299</div><p class="muted">Complete resume transformation<br>ATS optimization<br>Professional formatting<br>PDF + DOCX export</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="startPayment('transformation')">Get transformation</button></div>
+  <div class="section-inner">
+    <h2 class="section-title">Simple pricing</h2>
+    <p class="section-sub">Start free. Upgrade when you need more.</p>
+    <div class="pricing-grid">
+      <!-- Free Plan -->
+      <div class="card">
+        <h3>Free</h3>
+        <div class="price">₹0</div>
+        <p class="muted">3 ATS scans/day<br />Basic keyword analysis<br />Basic improvement tips</p>
+        <button class="btn secondary" style="margin-top:18px;width:100%" onclick="openAuth('signup')">Start free</button>
+      </div>
+
+      <!-- PRO PLAN – ₹149 Payment Button -->
+      <div class="card highlight">
+        <h3>Pro</h3>
+        <div class="price">₹149 <small>one-time</small></div>
+        <p class="muted">Unlimited scans<br />AI rewriting<br />Cover letters<br />LinkedIn optimization<br />PDF/DOCX export</p>
+        <form>
+          <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_TW3eMI6ACiDxKq" async> </script>
+        </form>
+      </div>
+
+      <!-- TRANSFORMATION PLAN – ₹299 Payment Button -->
+      <div class="card">
+        <h3>One-time</h3>
+        <div class="price">₹299</div>
+        <p class="muted">Complete resume transformation<br />ATS optimization<br />Professional formatting<br />PDF + DOCX export</p>
+        <form>
+          <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_TW3gvbKRG7FJHa" async> </script>
+        </form>
+      </div>
+    </div>
+    <p class="notice" style="text-align:center;margin-top:18px">🔒 Secure payments powered by Razorpay Payment Buttons.</p>
   </div>
-  <p class="notice" style="text-align:center;margin-top:18px">Payments are handled by Razorpay-hosted Payment Links. No Razorpay secret is stored in this website.</p>
-</div>
 </section>
 
 <footer>
@@ -261,12 +476,12 @@ a{color:#9eb7ff;text-decoration:none}
   <p style="margin-top:8px">Business enquiries: <a href="mailto:prathivkumar13@outlook.com">prathivkumar13@outlook.com</a> • Privacy • Terms</p>
 </footer>
 
-
+<!-- Admin Panel -->
 <div id="resumoraAdminPanel" role="dialog" aria-modal="true" aria-labelledby="resumoraAdminTitle">
   <div class="admin-card">
     <div class="admin-head">
       <div>
-        <div class="label">RE SUMORA CONTROL CENTER</div>
+        <div class="label">RESUMORA CONTROL CENTER</div>
         <h2 id="resumoraAdminTitle">👑 Admin God Mode</h2>
         <div id="resumoraAdminIdentity" class="notice"></div>
       </div>
@@ -279,7 +494,7 @@ a{color:#9eb7ff;text-decoration:none}
       <div class="admin-stat"><strong id="adminPending">—</strong><span>Pending reviews</span></div>
     </div>
     <div class="admin-note">
-      <b>Admin account:</b> prathiv132004@gmail.com<br>
+      <b>Admin account:</b> prathiv132004@gmail.com<br />
       This static single-file version uses your Google account email to unlock the admin interface.
       For production-grade security, Firebase custom claims/Firestore Security Rules must enforce admin access server-side.
     </div>
@@ -291,13 +506,14 @@ a{color:#9eb7ff;text-decoration:none}
   </div>
 </div>
 
+<!-- Auth Modal -->
 <div class="modal" id="authModal">
   <div class="modal-card">
     <h2 id="authTitle">Create your Resumora account</h2>
     <p id="authDesc">Save your resumes and access your tools across sessions.</p>
-    <div class="form-group" id="nameGroup"><label>Full name</label><input id="authName" placeholder="Your name"></div>
-    <div class="form-group"><label>Email</label><input id="authEmail" type="email" placeholder="you@example.com"></div>
-    <div class="form-group"><label>Password</label><input id="authPassword" type="password" placeholder="••••••••"></div>
+    <div class="form-group" id="nameGroup"><label>Full name</label><input id="authName" placeholder="Your name" /></div>
+    <div class="form-group"><label>Email</label><input id="authEmail" type="email" placeholder="you@example.com" /></div>
+    <div class="form-group"><label>Password</label><input id="authPassword" type="password" placeholder="••••••••" /></div>
     <div class="form-actions"><button class="btn secondary" onclick="closeAuth()">Cancel</button><button class="btn" onclick="submitAuth()">Continue</button></div>
     <div style="display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--muted);font-size:.82rem">
       <span style="height:1px;background:rgba(255,255,255,.12);flex:1"></span><span>OR</span><span style="height:1px;background:rgba(255,255,255,.12);flex:1"></span>
@@ -307,133 +523,154 @@ a{color:#9eb7ff;text-decoration:none}
   </div>
 </div>
 
+<!-- ===== SCRIPTS ===== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+
 <script>
-const FREE_LIMIT=3;
-const PDFJS_CDN="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
-let mode='signup';
-const $=id=>document.getElementById(id);
+  // ============================================================
+  // 1. EXISTING APP LOGIC (resume analysis, auth, etc.)
+  // ============================================================
 
-function getUsage(){const d=new Date().toDateString();const x=JSON.parse(localStorage.getItem('resumora_usage')||'{}');return x.date===d?x.count:0}
-function setUsage(n){localStorage.setItem('resumora_usage',JSON.stringify({date:new Date().toDateString(),count:n}))}
+  const FREE_LIMIT = 3;
+  const PDFJS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
+  let mode = 'signup';
+  const $ = id => document.getElementById(id);
 
-function openAuth(m){mode=m;$('authModal').classList.add('show');$('nameGroup').style.display=m==='signup'?'block':'none';
-$('authTitle').textContent=m==='signup'?'Create your Resumora account':'Welcome back';$('authDesc').textContent=m==='signup'?'Save your resumes and access your tools across sessions.':'Log in to access your Resumora account.';
-$('authMsg').textContent='';}
-function closeAuth(){$('authModal').classList.remove('show')}
-function submitAuth(){
-  const email=$('authEmail').value.trim(),pass=$('authPassword').value;
-  if(!email||!pass){$('authMsg').textContent='Please enter your email and password.';return}
-  // Demo-only local account. Replace with Supabase/Firebase/custom auth before launch.
-  const account={name:$('authName').value.trim()||email.split('@')[0],email};
-  localStorage.setItem('resumora_demo_account',JSON.stringify(account));closeAuth();showAccount();
-}
-function showAccount(){
-  const a=JSON.parse(localStorage.getItem('resumora_demo_account')||'null');if(!a)return;
-  $('dashboard').classList.add('show');$('accountName').textContent='Welcome, '+a.name+' 👋';$('accountEmail').textContent=a.email;
-}
-function logout(){localStorage.removeItem('resumora_demo_account');$('dashboard').classList.remove('show')}
+  function getUsage() {
+    const d = new Date().toDateString();
+    const x = JSON.parse(localStorage.getItem('resumora_usage') || '{}');
+    return x.date === d ? x.count : 0;
+  }
+  function setUsage(n) {
+    localStorage.setItem('resumora_usage', JSON.stringify({ date: new Date().toDateString(), count: n }));
+  }
 
-async function extractResumeFile(file){
-  if(!file) return;
-  const name=file.name.toLowerCase();
-  const allowed=/\.(pdf|doc|docx)$/i.test(name);
-  if(!allowed){ alert('Please choose a PDF, DOC or DOCX file.'); return; }
+  function openAuth(m) {
+    mode = m;
+    $('authModal').classList.add('show');
+    $('nameGroup').style.display = m === 'signup' ? 'block' : 'none';
+    $('authTitle').textContent = m === 'signup' ? 'Create your Resumora account' : 'Welcome back';
+    $('authDesc').textContent = m === 'signup' ? 'Save your resumes and access your tools across sessions.' : 'Log in to access your Resumora account.';
+    $('authMsg').textContent = '';
+  }
+  function closeAuth() { $('authModal').classList.remove('show'); }
 
-  $('fileName').textContent='Reading: '+file.name+'…';
-  try{
-    let text='';
-    if(name.endsWith('.pdf')){
-      const pdfjs=await import(PDFJS_CDN);
-      pdfjs.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
-      const data=await file.arrayBuffer();
-      const pdf=await pdfjs.getDocument({data}).promise;
-      const pages=[];
-      for(let i=1;i<=pdf.numPages;i++){
-        const page=await pdf.getPage(i);
-        const content=await page.getTextContent();
-        pages.push(content.items.map(item=>item.str||'').join(' '));
+  function submitAuth() {
+    const email = $('authEmail').value.trim(),
+      pass = $('authPassword').value;
+    if (!email || !pass) { $('authMsg').textContent = 'Please enter your email and password.'; return; }
+    const account = { name: $('authName').value.trim() || email.split('@')[0], email };
+    localStorage.setItem('resumora_demo_account', JSON.stringify(account));
+    closeAuth();
+    showAccount();
+  }
+
+  function showAccount() {
+    const a = JSON.parse(localStorage.getItem('resumora_demo_account') || 'null');
+    if (!a) return;
+    $('dashboard').classList.add('show');
+    $('accountName').textContent = 'Welcome, ' + a.name + ' 👋';
+    $('accountEmail').textContent = a.email;
+  }
+  function logout() { localStorage.removeItem('resumora_demo_account');
+    $('dashboard').classList.remove('show'); }
+
+  async function extractResumeFile(file) {
+    if (!file) return;
+    const name = file.name.toLowerCase();
+    const allowed = /\.(pdf|doc|docx)$/i.test(name);
+    if (!allowed) { alert('Please choose a PDF, DOC or DOCX file.'); return; }
+    $('fileName').textContent = 'Reading: ' + file.name + '…';
+    try {
+      let text = '';
+      if (name.endsWith('.pdf')) {
+        const pdfjs = await import(PDFJS_CDN);
+        pdfjs.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+        const data = await file.arrayBuffer();
+        const pdf = await pdfjs.getDocument({ data }).promise;
+        const pages = [];
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          pages.push(content.items.map(item => item.str || '').join(' '));
+        }
+        text = pages.join('\n\n');
+      } else if (window.mammoth) {
+        const data = await file.arrayBuffer();
+        const result = await mammoth.extractRawText({ arrayBuffer: data });
+        text = result.value || '';
+      } else {
+        throw new Error('DOC/DOCX reader could not be loaded.');
       }
-      text=pages.join('\n\n');
-    }else if(window.mammoth){
-      const data=await file.arrayBuffer();
-      const result=await mammoth.extractRawText({arrayBuffer:data});
-      text=result.value||'';
-    }else{
-      throw new Error('DOC/DOCX reader could not be loaded.');
+      text = text.replace(/\r/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+      if (!text || text.length < 20) throw new Error('No readable text was found. If the PDF is scanned/image-only, OCR is required.');
+      $('resumeInput').value = text;
+      $('fileName').textContent = '✓ ' + file.name + ' — text extracted';
+    } catch (err) {
+      $('fileName').textContent = 'Could not read ' + file.name;
+      alert('Could not extract text from this file. ' + (err.message || 'Please try another PDF/DOC/DOCX.'));
     }
-
-    text=text.replace(/\r/g,'').replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
-    if(!text || text.length<20) throw new Error('No readable text was found. If the PDF is scanned/image-only, OCR is required.');
-    $('resumeInput').value=text;
-    $('fileName').textContent='✓ '+file.name+' — text extracted';
-  }catch(err){
-    $('fileName').textContent='Could not read '+file.name;
-    alert('Could not extract text from this file. '+(err.message||'Please try another PDF/DOC/DOCX.'));
   }
-}
 
-$('fileInput').addEventListener('change',e=>extractResumeFile(e.target.files[0]));
-$('dropZone').addEventListener('dragover',e=>{e.preventDefault();$('dropZone').style.borderColor='rgba(91,140,255,.8)'});
-$('dropZone').addEventListener('dragleave',()=>{$('dropZone').style.borderColor='rgba(91,140,255,.35)'});
-$('dropZone').addEventListener('drop',e=>{e.preventDefault();$('dropZone').style.borderColor='rgba(91,140,255,.35)';const f=e.dataTransfer.files[0];if(f)extractResumeFile(f);});
+  $('fileInput').addEventListener('change', e => extractResumeFile(e.target.files[0]));
+  $('dropZone').addEventListener('dragover', e => { e.preventDefault();
+    $('dropZone').style.borderColor = 'rgba(91,140,255,.8)'; });
+  $('dropZone').addEventListener('dragleave', () => { $('dropZone').style.borderColor = 'rgba(91,140,255,.35)'; });
+  $('dropZone').addEventListener('drop', e => { e.preventDefault();
+    $('dropZone').style.borderColor = 'rgba(91,140,255,.35)'; const f = e.dataTransfer.files[0]; if (f) extractResumeFile(f); });
 
-function words(text){return [...new Set((text.toLowerCase().match(/[a-z][a-z+#.-]{2,}/g)||[]))]}
-function analyzeResume(){
- const resume=$('resumeInput').value.trim(),jd=$('jdInput').value.trim();
- if(!resume){alert('Please upload a readable PDF/DOC/DOCX file or paste your resume text.');return}
- let used=getUsage();if(used>=FREE_LIMIT){alert('You have used the 3 free scans available in this browser today.');return}
- const r=words(resume),j=words(jd);
- const stop=new Set(['the','and','for','with','from','that','this','are','you','your','our','have','has','will','job','work','role','years','using','into','their','they','about','not','can','all','who','but','was','were','been','than','also','any','how','what']);
- const keywords=(j.length?j:r).filter(x=>!stop.has(x)&&x.length>3);
- const matched=keywords.filter(x=>r.includes(x)).slice(0,12);
- const missing=[...new Set(keywords.filter(x=>!r.includes(x)))].slice(0,12);
- const base=j.length?Math.round((matched.length/Math.max(1,Math.min(12,keywords.length)))*100):Math.min(92,55+Math.min(35,Math.floor(r.length/20)));
- const score=Math.max(20,Math.min(98,base));
- const tier=score>=80?'Excellent':score>=60?'Good':score>=40?'Fair':'Needs work';
- $('score').textContent=score;
- $('tier').textContent=tier+' ATS Score';
- $('summary').textContent=j.length?'This prototype compares resume wording with the supplied job description. Connect the secure AI backend for deeper semantic analysis and rewriting.':'This is a general resume scan. Add a job description for targeted matching.';
- renderChips('matched',matched);renderChips('missing',missing,true);
- renderList('strengths',[
-  r.length>80?'Good amount of resume content':'Add more measurable achievements',
-  matched.length>4?'Strong job-description keyword overlap':'Increase role-specific keywords',
-  r.some(x=>['experience','education','skills'].includes(x))?'Core resume sections detected':'Add clear standard section headings'
- ]);
- renderList('fixes',missing.slice(0,5).map(x=>'Consider adding relevant keyword: '+x));
- $('results').style.display='block';$('results').scrollIntoView({behavior:'smooth',block:'start'});setUsage(used+1);
-}
-function renderChips(id,arr,missing=false){$(id).innerHTML=arr.length?arr.map(x=>`<span class="chip ${missing?'missing':''}">${escapeHtml(x)}</span>`).join(''):'<span class="muted">None detected</span>'}
-function renderList(id,arr){$(id).innerHTML=arr.map(x=>`<div class="item">• ${escapeHtml(x)}</div>`).join('')}
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function startPayment(plan='pro'){
-  const links = {
-    pro: 'https://rzp.io/rzp/tp7rnMf',
-    transformation: 'https://rzp.io/rzp/i8R5QAzA'
-  };
-  const url = links[plan];
-  if (!url) return;
-  window.location.assign(url);
-}
+  function words(text) { return [...new Set((text.toLowerCase().match(/[a-z][a-z+#.-]{2,}/g) || []))]; }
 
-function showPaymentMessage(message, success) {
-  let el = document.getElementById('paymentMessage');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'paymentMessage';
-    el.style.cssText = 'position:fixed;right:18px;bottom:18px;z-index:200;padding:13px 16px;border-radius:12px;max-width:380px;background:#151b2b;border:1px solid rgba(255,255,255,.12);box-shadow:0 15px 40px rgba(0,0,0,.3);font-size:.85rem;';
-    document.body.appendChild(el);
+  function analyzeResume() {
+    const resume = $('resumeInput').value.trim(),
+      jd = $('jdInput').value.trim();
+    if (!resume) { alert('Please upload a readable PDF/DOC/DOCX file or paste your resume text.'); return; }
+    let used = getUsage();
+    if (used >= FREE_LIMIT) { alert('You have used the 3 free scans available in this browser today.'); return; }
+    const r = words(resume),
+      j = words(jd);
+    const stop = new Set(['the', 'and', 'for', 'with', 'from', 'that', 'this', 'are', 'you', 'your', 'our', 'have', 'has', 'will', 'job', 'work', 'role', 'years', 'using', 'into', 'their', 'they', 'about', 'not', 'can', 'all', 'who', 'but', 'was', 'were', 'been', 'than', 'also', 'any', 'how', 'what']);
+    const keywords = (j.length ? j : r).filter(x => !stop.has(x) && x.length > 3);
+    const matched = keywords.filter(x => r.includes(x)).slice(0, 12);
+    const missing = [...new Set(keywords.filter(x => !r.includes(x)))].slice(0, 12);
+    const base = j.length ? Math.round((matched.length / Math.max(1, Math.min(12, keywords.length))) * 100) : Math.min(92, 55 + Math.min(35, Math.floor(r.length / 20)));
+    const score = Math.max(20, Math.min(98, base));
+    const tier = score >= 80 ? 'Excellent' : score >= 60 ? 'Good' : score >= 40 ? 'Fair' : 'Needs work';
+    $('score').textContent = score;
+    $('tier').textContent = tier + ' ATS Score';
+    $('summary').textContent = j.length ? 'This prototype compares resume wording with the supplied job description. Connect the secure AI backend for deeper semantic analysis and rewriting.' : 'This is a general resume scan. Add a job description for targeted matching.';
+    renderChips('matched', matched);
+    renderChips('missing', missing, true);
+    renderList('strengths', [
+      r.length > 80 ? 'Good amount of resume content' : 'Add more measurable achievements',
+      matched.length > 4 ? 'Strong job-description keyword overlap' : 'Increase role-specific keywords',
+      r.some(x => ['experience', 'education', 'skills'].includes(x)) ? 'Core resume sections detected' : 'Add clear standard section headings'
+    ]);
+    renderList('fixes', missing.slice(0, 5).map(x => 'Consider adding relevant keyword: ' + x));
+    $('results').style.display = 'block';
+    $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setUsage(used + 1);
   }
-  el.style.color = success ? '#70e3bf' : '#ff9cad';
-  el.textContent = message;
-  clearTimeout(window.__paymentMessageTimer);
-  window.__paymentMessageTimer = setTimeout(() => el.remove(), 7000);
-}
-showAccount();
+
+  function renderChips(id, arr, missing = false) {
+    $(id).innerHTML = arr.length ? arr.map(x => `<span class="chip ${missing?'missing':''}">${escapeHtml(x)}</span>`).join('') : '<span class="muted">None detected</span>';
+  }
+
+  function renderList(id, arr) {
+    $(id).innerHTML = arr.map(x => `<div class="item">• ${escapeHtml(x)}</div>`).join('');
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' } [m]));
+  }
+
+  showAccount();
 </script>
 
-<!-- Resumora Auth / Reviews / Admin integration -->
+<!-- ============================================================
+     FIREBASE AUTH & REVIEWS (unchanged from your original)
+     ============================================================ -->
 <script type="module">
   const firebaseConfig = {
     apiKey: "AIzaSyDG3gzlvISNGySTCrzd3zuZyemrJSatp34",
@@ -445,7 +682,6 @@ showAccount();
     measurementId: "G-PPN02969DJ"
   };
 
-  // Expose one promise so buttons can safely wait for Firebase to finish loading.
   window.resumoraFirebaseReady = (async () => {
     try {
       const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
@@ -486,264 +722,257 @@ showAccount();
 </script>
 
 <script>
-(function () {
-  const $id = id => document.getElementById(id);
+  (function () {
+    const $id = id => document.getElementById(id);
 
-  function setGlobalAccountUI(user) {
-    const btn = $id("resumoraAccountBtn");
-    const panel = $id("resumoraUserPanel");
-    const loginBtn = $id("googleGlobalLogin");
-    const name = $id("resumoraUserName");
-    const email = $id("resumoraUserEmail");
-    const avatar = $id("resumoraUserAvatar");
-    const reviewLogin = $id("googleReviewLogin");
-    const reviewForm = $id("reviewForm");
-    const reviewStatus = $id("reviewAuthStatus");
+    function setGlobalAccountUI(user) {
+      const btn = $id("resumoraAccountBtn");
+      const panel = $id("resumoraUserPanel");
+      const loginBtn = $id("googleGlobalLogin");
+      const name = $id("resumoraUserName");
+      const email = $id("resumoraUserEmail");
+      const avatar = $id("resumoraUserAvatar");
+      const reviewLogin = $id("googleReviewLogin");
+      const reviewForm = $id("reviewForm");
+      const reviewStatus = $id("reviewAuthStatus");
 
-    if (user) {
-      if (btn) btn.textContent = "👤 " + (user.displayName || "Account").split(" ")[0];
-      setAdminUI(user);
-      if (loginBtn) loginBtn.style.display = "none";
-      if (panel) panel.style.display = "block";
-      if (name) name.textContent = user.displayName || "Resumora User";
-      if (email) email.textContent = user.email || "";
-      if (avatar) {
-        avatar.src = user.photoURL || "";
-        avatar.style.display = user.photoURL ? "inline-block" : "none";
+      if (user) {
+        if (btn) btn.textContent = "👤 " + (user.displayName || "Account").split(" ")[0];
+        setAdminUI(user);
+        if (loginBtn) loginBtn.style.display = "none";
+        if (panel) panel.style.display = "block";
+        if (name) name.textContent = user.displayName || "Resumora User";
+        if (email) email.textContent = user.email || "";
+        if (avatar) {
+          avatar.src = user.photoURL || "";
+          avatar.style.display = user.photoURL ? "inline-block" : "none";
+        }
+        if (reviewLogin) reviewLogin.style.display = "none";
+        if (reviewForm) reviewForm.style.display = "block";
+        if (reviewStatus) reviewStatus.textContent = "Signed in as " + (user.displayName || user.email);
+      } else {
+        if (btn) btn.textContent = "Sign in / Sign up";
+        setAdminUI(null);
+        if (loginBtn) loginBtn.style.display = "block";
+        if (panel) panel.style.display = "none";
+        if (reviewLogin) reviewLogin.style.display = "inline-block";
+        if (reviewForm) reviewForm.style.display = "none";
+        if (reviewStatus) reviewStatus.textContent = "Sign in to leave a review.";
       }
-      if (reviewLogin) reviewLogin.style.display = "none";
-      if (reviewForm) reviewForm.style.display = "block";
-      if (reviewStatus) reviewStatus.textContent = "Signed in as " + (user.displayName || user.email);
-    } else {
-      if (btn) btn.textContent = "Sign in / Sign up";
-      setAdminUI(null);
-      if (loginBtn) loginBtn.style.display = "block";
-      if (panel) panel.style.display = "none";
-      if (reviewLogin) reviewLogin.style.display = "inline-block";
-      if (reviewForm) reviewForm.style.display = "none";
-      if (reviewStatus) reviewStatus.textContent = "Sign in to leave a review.";
     }
-  }
 
-  function openGlobalAuth() {
-    const modal = $id("resumoraAuthModal");
-    if (modal) modal.style.display = "flex";
-  }
-
-  function closeGlobalAuth() {
-    const modal = $id("resumoraAuthModal");
-    if (modal) modal.style.display = "none";
-    // The main Resumora login/signup dialog uses #authModal.
-    const mainModal = $id("authModal");
-    if (mainModal) mainModal.classList.remove("show");
-  }
-
-  async function signInGoogle() {
-    const status = $id("resumoraAuthStatus");
-    const buttons = [$id("googleGlobalLogin"), $id("googleAuthMain")].filter(Boolean);
-    buttons.forEach(b => { b.disabled = true; b.textContent = "Connecting to Google…"; });
-
-    try {
-      const authApi = await window.resumoraFirebaseReady;
-      await authApi.signInWithPopup(authApi.auth, authApi.provider);
-      closeGlobalAuth();
-    } catch (error) {
-      console.error("Google sign-in failed:", error);
-      const code = error && error.code ? " (" + error.code + ")" : "";
-      if (status) status.textContent = "Google sign-in failed" + code;
-      alert("Google sign-in failed" + code + ". Please check Firebase Authentication → Sign-in method → Google and Authorized domains.");
-    } finally {
-      buttons.forEach(b => { b.disabled = false; b.textContent = "Continue with Google"; });
+    function openGlobalAuth() {
+      const modal = $id("resumoraAuthModal");
+      if (modal) modal.style.display = "flex";
     }
-  }
 
-  async function signOutUser() {
-    try {
-      const authApi = await window.resumoraFirebaseReady;
-      await authApi.signOut(authApi.auth);
-      closeGlobalAuth();
-    } catch (error) {
-      alert(error.message || "Could not sign out.");
-    }
-  }
-
-
-  const RESUMORA_ADMIN_EMAIL = "prathiv132004@gmail.com";
-
-  function isResumoraAdmin(user) {
-    return !!user && (user.email || "").toLowerCase() === RESUMORA_ADMIN_EMAIL.toLowerCase();
-  }
-
-  function setAdminUI(user) {
-    const btn = $id("resumoraAdminBtn");
-    if (btn) btn.style.display = isResumoraAdmin(user) ? "inline-block" : "none";
-  }
-
-  async function loadAdminReviews() {
-    const list = $id("adminReviewsList");
-    if (!list) return;
-    try {
-      const a = await window.resumoraFirebaseReady;
-      const snap = await a.getDocs(a.query(a.collection(a.db, "reviews"), a.orderBy("createdAt", "desc")));
-      let approved = 0, pending = 0;
-      const rows = [];
-      snap.forEach(d => {
-        const r = d.data();
-        if (r.approved) approved++; else pending++;
-        rows.push(`<div style="padding:14px 0;border-bottom:1px solid var(--border)">
-          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
-            <strong>${(r.displayName || "User").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}</strong>
-            <span class="pill">${r.approved ? "Approved" : "Pending"}</span>
-          </div>
-          <div style="margin-top:5px">Rating: ${Number(r.rating)||0}/5</div>
-          <div style="margin-top:5px;color:var(--muted)">${(r.text || "").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}</div>
-        </div>`);
-      });
-      if ($id("adminReviews")) $id("adminReviews").textContent = snap.size;
-      if ($id("adminApproved")) $id("adminApproved").textContent = approved;
-      if ($id("adminPending")) $id("adminPending").textContent = pending;
-      if ($id("adminUsers")) $id("adminUsers").textContent = "—";
-      list.innerHTML = rows.length ? rows.join("") : '<div class="notice">No reviews found.</div>';
-    } catch (e) {
-      console.error("Admin review load failed:", e);
-      if (list) list.innerHTML = '<div class="notice">Could not load review data. Check Firestore rules.</div>';
-    }
-  }
-
-  async function openAdminPanel() {
-    const user = window.resumoraCurrentUser;
-    if (!isResumoraAdmin(user)) {
-      alert("Admin access denied.");
-      return;
-    }
-    const panel = $id("resumoraAdminPanel");
-    if (panel) panel.style.display = "flex";
-    if ($id("resumoraAdminIdentity")) $id("resumoraAdminIdentity").textContent = "Signed in as " + user.email;
-    await loadAdminReviews();
-  }
-
-  function closeAdminPanel() {
-    const panel = $id("resumoraAdminPanel");
-    if (panel) panel.style.display = "none";
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const accountBtn = $id("resumoraAccountBtn");
-    const closeBtn = $id("resumoraAuthClose");
-    const modal = $id("resumoraAuthModal");
-    const globalGoogle = $id("googleGlobalLogin");
-    const mainGoogle = $id("googleAuthMain");
-    const signOut = $id("resumoraSignOut");
-    const reviewGoogle = $id("googleReviewLogin");
-    const submitReview = $id("submitReview");
-
-    const adminBtn = $id("resumoraAdminBtn");
-    const adminClose = $id("resumoraAdminClose");
-    const adminRefresh = $id("adminRefresh");
-    const adminSignOut = $id("adminSignOut");
-    const adminPanel = $id("resumoraAdminPanel");
-    if (adminBtn) adminBtn.addEventListener("click", openAdminPanel);
-    if (adminClose) adminClose.addEventListener("click", closeAdminPanel);
-    if (adminRefresh) adminRefresh.addEventListener("click", loadAdminReviews);
-    if (adminSignOut) adminSignOut.addEventListener("click", async () => {
-      closeAdminPanel();
-      await signOutUser();
-    });
-    if (adminPanel) adminPanel.addEventListener("click", e => {
-      if (e.target === adminPanel) closeAdminPanel();
-    });
-
-
-    if (accountBtn) accountBtn.addEventListener("click", openGlobalAuth);
-    if (closeBtn) closeBtn.addEventListener("click", closeGlobalAuth);
-    if (modal) modal.addEventListener("click", e => { if (e.target === modal) closeGlobalAuth(); });
-    // Escape-key close for auth dialog
-    document.addEventListener("keydown", e => {
-      if (e.key === "Escape") {
-        const mainModal = $id("authModal");
-        if (mainModal) mainModal.classList.remove("show");
-        closeGlobalAuth();
-      }
-    });
-    if (globalGoogle) globalGoogle.addEventListener("click", signInGoogle);
-    if (mainGoogle) mainGoogle.addEventListener("click", signInGoogle);
-    if (signOut) signOut.addEventListener("click", signOutUser);
-
-    if (reviewGoogle) reviewGoogle.addEventListener("click", openGlobalAuth);
-
-    if (submitReview) submitReview.addEventListener("click", async () => {
-      try {
-        const a = await window.resumoraFirebaseReady;
-        const user = window.resumoraCurrentUser;
-        if (!user) return openGlobalAuth();
-
-        const text = ($id("reviewText")?.value || "").trim();
-        const rating = Number($id("reviewRating")?.value || 5);
-        if (text.length < 5) return alert("Please write at least 5 characters.");
-        if (rating < 1 || rating > 5) return alert("Please select a valid rating.");
-
-        await a.addDoc(a.collection(a.db, "reviews"), {
-          uid: user.uid,
-          displayName: user.displayName || "Resumora User",
-          photoURL: user.photoURL || "",
-          rating,
-          text,
-          createdAt: a.serverTimestamp(),
-          approved: false
-        });
-
-        $id("reviewText").value = "";
-        alert("Thanks! Your review was submitted for moderation.");
-      } catch (error) {
-        console.error(error);
-        alert(error.message || "Could not submit review.");
-      }
-    });
-  });
-
-  document.addEventListener("resumora-auth-changed", e => {
-    const user = e.detail || null;
-    setGlobalAccountUI(user);
-    setAdminUI(user);
-    // Once Google authentication succeeds, close whichever auth dialog is visible.
-    if (user) {
+    function closeGlobalAuth() {
+      const modal = $id("resumoraAuthModal");
+      if (modal) modal.style.display = "none";
       const mainModal = $id("authModal");
       if (mainModal) mainModal.classList.remove("show");
-      const globalModal = $id("resumoraAuthModal");
-      if (globalModal) globalModal.style.display = "none";
-      if (typeof window.showAccount === "function") window.showAccount();
-    } else {
-      closeAdminPanel();
     }
-  });
 
-  document.addEventListener("resumora-auth-error", e => {
-    console.error("Firebase auth initialization error:", e.detail);
-  });
-})();
+    async function signInGoogle() {
+      const status = $id("resumoraAuthStatus");
+      const buttons = [$id("googleGlobalLogin"), $id("googleAuthMain")].filter(Boolean);
+      buttons.forEach(b => { b.disabled = true; b.textContent = "Connecting to Google…"; });
+
+      try {
+        const authApi = await window.resumoraFirebaseReady;
+        await authApi.signInWithPopup(authApi.auth, authApi.provider);
+        closeGlobalAuth();
+      } catch (error) {
+        console.error("Google sign-in failed:", error);
+        const code = error && error.code ? " (" + error.code + ")" : "";
+        if (status) status.textContent = "Google sign-in failed" + code;
+        alert("Google sign-in failed" + code + ". Please check Firebase Authentication → Sign-in method → Google and Authorized domains.");
+      } finally {
+        buttons.forEach(b => { b.disabled = false; b.textContent = "Continue with Google"; });
+      }
+    }
+
+    async function signOutUser() {
+      try {
+        const authApi = await window.resumoraFirebaseReady;
+        await authApi.signOut(authApi.auth);
+        closeGlobalAuth();
+      } catch (error) {
+        alert(error.message || "Could not sign out.");
+      }
+    }
+
+    const RESUMORA_ADMIN_EMAIL = "prathiv132004@gmail.com";
+
+    function isResumoraAdmin(user) {
+      return !!user && (user.email || "").toLowerCase() === RESUMORA_ADMIN_EMAIL.toLowerCase();
+    }
+
+    function setAdminUI(user) {
+      const btn = $id("resumoraAdminBtn");
+      if (btn) btn.style.display = isResumoraAdmin(user) ? "inline-block" : "none";
+    }
+
+    async function loadAdminReviews() {
+      const list = $id("adminReviewsList");
+      if (!list) return;
+      try {
+        const a = await window.resumoraFirebaseReady;
+        const snap = await a.getDocs(a.query(a.collection(a.db, "reviews"), a.orderBy("createdAt", "desc")));
+        let approved = 0, pending = 0;
+        const rows = [];
+        snap.forEach(d => {
+          const r = d.data();
+          if (r.approved) approved++; else pending++;
+          rows.push(`<div style="padding:14px 0;border-bottom:1px solid var(--border)">
+            <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+              <strong>${(r.displayName || "User").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}</strong>
+              <span class="pill">${r.approved ? "Approved" : "Pending"}</span>
+            </div>
+            <div style="margin-top:5px">Rating: ${Number(r.rating)||0}/5</div>
+            <div style="margin-top:5px;color:var(--muted)">${(r.text || "").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}</div>
+          </div>`);
+        });
+        if ($id("adminReviews")) $id("adminReviews").textContent = snap.size;
+        if ($id("adminApproved")) $id("adminApproved").textContent = approved;
+        if ($id("adminPending")) $id("adminPending").textContent = pending;
+        if ($id("adminUsers")) $id("adminUsers").textContent = "—";
+        list.innerHTML = rows.length ? rows.join("") : '<div class="notice">No reviews found.</div>';
+      } catch (e) {
+        console.error("Admin review load failed:", e);
+        if (list) list.innerHTML = '<div class="notice">Could not load review data. Check Firestore rules.</div>';
+      }
+    }
+
+    async function openAdminPanel() {
+      const user = window.resumoraCurrentUser;
+      if (!isResumoraAdmin(user)) {
+        alert("Admin access denied.");
+        return;
+      }
+      const panel = $id("resumoraAdminPanel");
+      if (panel) panel.style.display = "flex";
+      if ($id("resumoraAdminIdentity")) $id("resumoraAdminIdentity").textContent = "Signed in as " + user.email;
+      await loadAdminReviews();
+    }
+
+    function closeAdminPanel() {
+      const panel = $id("resumoraAdminPanel");
+      if (panel) panel.style.display = "none";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const accountBtn = $id("resumoraAccountBtn");
+      const closeBtn = $id("resumoraAuthClose");
+      const modal = $id("resumoraAuthModal");
+      const globalGoogle = $id("googleGlobalLogin");
+      const mainGoogle = $id("googleAuthMain");
+      const signOut = $id("resumoraSignOut");
+      const reviewGoogle = $id("googleReviewLogin");
+      const submitReview = $id("submitReview");
+
+      const adminBtn = $id("resumoraAdminBtn");
+      const adminClose = $id("resumoraAdminClose");
+      const adminRefresh = $id("adminRefresh");
+      const adminSignOut = $id("adminSignOut");
+      const adminPanel = $id("resumoraAdminPanel");
+      if (adminBtn) adminBtn.addEventListener("click", openAdminPanel);
+      if (adminClose) adminClose.addEventListener("click", closeAdminPanel);
+      if (adminRefresh) adminRefresh.addEventListener("click", loadAdminReviews);
+      if (adminSignOut) adminSignOut.addEventListener("click", async () => {
+        closeAdminPanel();
+        await signOutUser();
+      });
+      if (adminPanel) adminPanel.addEventListener("click", e => {
+        if (e.target === adminPanel) closeAdminPanel();
+      });
+
+      if (accountBtn) accountBtn.addEventListener("click", openGlobalAuth);
+      if (closeBtn) closeBtn.addEventListener("click", closeGlobalAuth);
+      if (modal) modal.addEventListener("click", e => { if (e.target === modal) closeGlobalAuth(); });
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape") {
+          const mainModal = $id("authModal");
+          if (mainModal) mainModal.classList.remove("show");
+          closeGlobalAuth();
+        }
+      });
+      if (globalGoogle) globalGoogle.addEventListener("click", signInGoogle);
+      if (mainGoogle) mainGoogle.addEventListener("click", signInGoogle);
+      if (signOut) signOut.addEventListener("click", signOutUser);
+
+      if (reviewGoogle) reviewGoogle.addEventListener("click", openGlobalAuth);
+
+      if (submitReview) submitReview.addEventListener("click", async () => {
+        try {
+          const a = await window.resumoraFirebaseReady;
+          const user = window.resumoraCurrentUser;
+          if (!user) return openGlobalAuth();
+
+          const text = ($id("reviewText")?.value || "").trim();
+          const rating = Number($id("reviewRating")?.value || 5);
+          if (text.length < 5) return alert("Please write at least 5 characters.");
+          if (rating < 1 || rating > 5) return alert("Please select a valid rating.");
+
+          await a.addDoc(a.collection(a.db, "reviews"), {
+            uid: user.uid,
+            displayName: user.displayName || "Resumora User",
+            photoURL: user.photoURL || "",
+            rating,
+            text,
+            createdAt: a.serverTimestamp(),
+            approved: false
+          });
+
+          $id("reviewText").value = "";
+          alert("Thanks! Your review was submitted for moderation.");
+        } catch (error) {
+          console.error(error);
+          alert(error.message || "Could not submit review.");
+        }
+      });
+    });
+
+    document.addEventListener("resumora-auth-changed", e => {
+      const user = e.detail || null;
+      setGlobalAccountUI(user);
+      setAdminUI(user);
+      if (user) {
+        const mainModal = $id("authModal");
+        if (mainModal) mainModal.classList.remove("show");
+        const globalModal = $id("resumoraAuthModal");
+        if (globalModal) globalModal.style.display = "none";
+        if (typeof window.showAccount === "function") window.showAccount();
+      } else {
+        closeAdminPanel();
+      }
+    });
+
+    document.addEventListener("resumora-auth-error", e => {
+      console.error("Firebase auth initialization error:", e.detail);
+    });
+  })();
 </script>
 
 <script id="resumora-auth-success-toast">
-(function(){
-  let toastTimer;
-  function showAuthSuccessToast(user){
-    const toast=document.getElementById("resumoraAuthToast");
-    const text=document.getElementById("resumoraAuthToastText");
-    if(!toast) return;
-    const name=user && user.displayName ? user.displayName.split(" ")[0] : "";
-    if(text) text.textContent = name
-      ? `Successfully logged in, ${name}!`
-      : "Successfully logged in!";
-    toast.style.display="flex";
-    clearTimeout(toastTimer);
-    toastTimer=setTimeout(()=>{ toast.style.display="none"; },3500);
-  }
-
-  // Firebase's auth-state event fires after successful Google sign-in/sign-up.
-  document.addEventListener("resumora-auth-changed", function(e){
-    if(e.detail) showAuthSuccessToast(e.detail);
-  });
-})();
+  (function(){
+    let toastTimer;
+    function showAuthSuccessToast(user){
+      const toast=document.getElementById("resumoraAuthToast");
+      const text=document.getElementById("resumoraAuthToastText");
+      if(!toast) return;
+      const name=user && user.displayName ? user.displayName.split(" ")[0] : "";
+      if(text) text.textContent = name
+        ? `Successfully logged in, ${name}!`
+        : "Successfully logged in!";
+      toast.style.display="flex";
+      clearTimeout(toastTimer);
+      toastTimer=setTimeout(()=>{ toast.style.display="none"; },3500);
+    }
+    document.addEventListener("resumora-auth-changed", function(e){
+      if(e.detail) showAuthSuccessToast(e.detail);
+    });
+  })();
 </script>
 
 </body>
