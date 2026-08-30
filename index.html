@@ -104,6 +104,27 @@ a{color:#9eb7ff;text-decoration:none}
   to{opacity:1;transform:translateY(0)}
 }
 </style>
+
+<style id="resumora-admin-style">
+#resumoraAdminBtn{display:none}
+#resumoraAdminPanel{
+  display:none;position:fixed;inset:0;z-index:10020;background:rgba(0,0,0,.78);
+  align-items:center;justify-content:center;padding:18px
+}
+.admin-card{
+  width:min(1050px,100%);max-height:90vh;overflow:auto;background:#111725;
+  border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:24px;
+  box-shadow:0 30px 100px rgba(0,0,0,.5)
+}
+.admin-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}
+.admin-head h2{margin:0}.admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.admin-stat{background:rgba(255,255,255,.045);border:1px solid var(--border);border-radius:15px;padding:16px}
+.admin-stat strong{display:block;font-size:1.7rem}.admin-stat span{color:var(--muted);font-size:.78rem}
+.admin-note{margin-top:16px;padding:14px;border-radius:12px;background:rgba(244,183,64,.08);border:1px solid rgba(244,183,64,.18);color:#f4d27d;font-size:.82rem}
+@media(max-width:800px){.admin-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.admin-grid{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
 <div id="resumoraAuthToast" role="status" aria-live="polite">
@@ -115,6 +136,7 @@ a{color:#9eb7ff;text-decoration:none}
 <nav>
   <div class="logo">Resumora</div>
   <div class="nav-actions">
+    <button id="resumoraAdminBtn" class="btn secondary" type="button">👑 Admin</button>
     <button class="btn secondary" onclick="openAuth('login')">Log in</button>
     <button class="btn" onclick="openAuth('signup')">Sign up free</button>
   </div>
@@ -233,6 +255,36 @@ a{color:#9eb7ff;text-decoration:none}
   <p style="margin-top:8px">Built by <b>Prathiv Kumar V</b> • © 2026 Prathiv Kumar V. All rights reserved.</p>
   <p style="margin-top:8px">Business enquiries: <a href="mailto:prathivkumar13@outlook.com">prathivkumar13@outlook.com</a> • Privacy • Terms</p>
 </footer>
+
+
+<div id="resumoraAdminPanel" role="dialog" aria-modal="true" aria-labelledby="resumoraAdminTitle">
+  <div class="admin-card">
+    <div class="admin-head">
+      <div>
+        <div class="label">RE SUMORA CONTROL CENTER</div>
+        <h2 id="resumoraAdminTitle">👑 Admin God Mode</h2>
+        <div id="resumoraAdminIdentity" class="notice"></div>
+      </div>
+      <button class="btn secondary" type="button" id="resumoraAdminClose">Close</button>
+    </div>
+    <div class="admin-grid">
+      <div class="admin-stat"><strong id="adminUsers">—</strong><span>Authenticated users visible to this browser</span></div>
+      <div class="admin-stat"><strong id="adminReviews">—</strong><span>Reviews loaded</span></div>
+      <div class="admin-stat"><strong id="adminApproved">—</strong><span>Approved reviews</span></div>
+      <div class="admin-stat"><strong id="adminPending">—</strong><span>Pending reviews</span></div>
+    </div>
+    <div class="admin-note">
+      <b>Admin account:</b> prathiv132004@gmail.com<br>
+      This static single-file version uses your Google account email to unlock the admin interface.
+      For production-grade security, Firebase custom claims/Firestore Security Rules must enforce admin access server-side.
+    </div>
+    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" type="button" id="adminRefresh">Refresh review data</button>
+      <button class="btn secondary" type="button" id="adminSignOut">Sign out</button>
+    </div>
+    <div id="adminReviewsList" style="margin-top:18px"></div>
+  </div>
+</div>
 
 <div class="modal" id="authModal">
   <div class="modal-card">
@@ -397,7 +449,7 @@ showAccount();
         onAuthStateChanged, setPersistence, browserLocalPersistence
       } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
       const {
-        getFirestore, collection, addDoc, serverTimestamp
+        getFirestore, collection, addDoc, serverTimestamp, query, orderBy, getDocs
       } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
 
       const app = initializeApp(firebaseConfig);
@@ -410,7 +462,7 @@ showAccount();
 
       window.resumoraAuth = {
         auth, db, provider, signInWithPopup, signOut,
-        collection, addDoc, serverTimestamp
+        collection, addDoc, serverTimestamp, query, orderBy, getDocs
       };
 
       onAuthStateChanged(auth, user => {
@@ -445,6 +497,7 @@ showAccount();
 
     if (user) {
       if (btn) btn.textContent = "👤 " + (user.displayName || "Account").split(" ")[0];
+      setAdminUI(user);
       if (loginBtn) loginBtn.style.display = "none";
       if (panel) panel.style.display = "block";
       if (name) name.textContent = user.displayName || "Resumora User";
@@ -458,6 +511,7 @@ showAccount();
       if (reviewStatus) reviewStatus.textContent = "Signed in as " + (user.displayName || user.email);
     } else {
       if (btn) btn.textContent = "Sign in / Sign up";
+      setAdminUI(null);
       if (loginBtn) loginBtn.style.display = "block";
       if (panel) panel.style.display = "none";
       if (reviewLogin) reviewLogin.style.display = "inline-block";
@@ -508,6 +562,66 @@ showAccount();
     }
   }
 
+
+  const RESUMORA_ADMIN_EMAIL = "prathiv132004@gmail.com";
+
+  function isResumoraAdmin(user) {
+    return !!user && (user.email || "").toLowerCase() === RESUMORA_ADMIN_EMAIL.toLowerCase();
+  }
+
+  function setAdminUI(user) {
+    const btn = $id("resumoraAdminBtn");
+    if (btn) btn.style.display = isResumoraAdmin(user) ? "inline-block" : "none";
+  }
+
+  async function loadAdminReviews() {
+    const list = $id("adminReviewsList");
+    if (!list) return;
+    try {
+      const a = await window.resumoraFirebaseReady;
+      const snap = await a.getDocs(a.query(a.collection(a.db, "reviews"), a.orderBy("createdAt", "desc")));
+      let approved = 0, pending = 0;
+      const rows = [];
+      snap.forEach(d => {
+        const r = d.data();
+        if (r.approved) approved++; else pending++;
+        rows.push(`<div style="padding:14px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <strong>${(r.displayName || "User").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}</strong>
+            <span class="pill">${r.approved ? "Approved" : "Pending"}</span>
+          </div>
+          <div style="margin-top:5px">Rating: ${Number(r.rating)||0}/5</div>
+          <div style="margin-top:5px;color:var(--muted)">${(r.text || "").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}</div>
+        </div>`);
+      });
+      if ($id("adminReviews")) $id("adminReviews").textContent = snap.size;
+      if ($id("adminApproved")) $id("adminApproved").textContent = approved;
+      if ($id("adminPending")) $id("adminPending").textContent = pending;
+      if ($id("adminUsers")) $id("adminUsers").textContent = "—";
+      list.innerHTML = rows.length ? rows.join("") : '<div class="notice">No reviews found.</div>';
+    } catch (e) {
+      console.error("Admin review load failed:", e);
+      if (list) list.innerHTML = '<div class="notice">Could not load review data. Check Firestore rules.</div>';
+    }
+  }
+
+  async function openAdminPanel() {
+    const user = window.resumoraCurrentUser;
+    if (!isResumoraAdmin(user)) {
+      alert("Admin access denied.");
+      return;
+    }
+    const panel = $id("resumoraAdminPanel");
+    if (panel) panel.style.display = "flex";
+    if ($id("resumoraAdminIdentity")) $id("resumoraAdminIdentity").textContent = "Signed in as " + user.email;
+    await loadAdminReviews();
+  }
+
+  function closeAdminPanel() {
+    const panel = $id("resumoraAdminPanel");
+    if (panel) panel.style.display = "none";
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const accountBtn = $id("resumoraAccountBtn");
     const closeBtn = $id("resumoraAuthClose");
@@ -517,6 +631,23 @@ showAccount();
     const signOut = $id("resumoraSignOut");
     const reviewGoogle = $id("googleReviewLogin");
     const submitReview = $id("submitReview");
+
+    const adminBtn = $id("resumoraAdminBtn");
+    const adminClose = $id("resumoraAdminClose");
+    const adminRefresh = $id("adminRefresh");
+    const adminSignOut = $id("adminSignOut");
+    const adminPanel = $id("resumoraAdminPanel");
+    if (adminBtn) adminBtn.addEventListener("click", openAdminPanel);
+    if (adminClose) adminClose.addEventListener("click", closeAdminPanel);
+    if (adminRefresh) adminRefresh.addEventListener("click", loadAdminReviews);
+    if (adminSignOut) adminSignOut.addEventListener("click", async () => {
+      closeAdminPanel();
+      await signOutUser();
+    });
+    if (adminPanel) adminPanel.addEventListener("click", e => {
+      if (e.target === adminPanel) closeAdminPanel();
+    });
+
 
     if (accountBtn) accountBtn.addEventListener("click", openGlobalAuth);
     if (closeBtn) closeBtn.addEventListener("click", closeGlobalAuth);
@@ -568,6 +699,7 @@ showAccount();
   document.addEventListener("resumora-auth-changed", e => {
     const user = e.detail || null;
     setGlobalAccountUI(user);
+    setAdminUI(user);
     // Once Google authentication succeeds, close whichever auth dialog is visible.
     if (user) {
       const mainModal = $id("authModal");
@@ -575,6 +707,8 @@ showAccount();
       const globalModal = $id("resumoraAuthModal");
       if (globalModal) globalModal.style.display = "none";
       if (typeof window.showAccount === "function") window.showAccount();
+    } else {
+      closeAdminPanel();
     }
   });
 
