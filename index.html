@@ -227,36 +227,42 @@
 
     #resumoraAuthToast {
       position: fixed;
-      top: 78px;
+      top: 82px;
       right: 22px;
       z-index: 10050;
       display: none;
       align-items: center;
-      gap: 10px;
-      max-width: min(380px, calc(100vw - 44px));
-      padding: 14px 18px;
+      gap: 12px;
+      max-width: min(420px, calc(100vw - 44px));
+      padding: 16px 22px;
       border-radius: 14px;
       background: rgba(20,25,32,.96);
       color: #fff;
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 14px 40px rgba(0,0,0,.35);
-      font-weight: 700;
-      font-size: 14px;
-      animation: resumoraToastIn .25s ease;
+      border: 1px solid rgba(40,201,151,.4);
+      box-shadow: 0 14px 50px rgba(0,0,0,.5);
+      font-weight: 600;
+      font-size: 15px;
+      animation: resumoraToastIn .35s ease;
+      backdrop-filter: blur(12px);
     }
     #resumoraAuthToast .toast-check {
-      width: 25px; height: 25px;
+      width: 28px; height: 28px;
       border-radius: 50%;
       display: grid;
       place-items: center;
-      background: #20b26b;
-      color: #fff;
-      font-size: 15px;
+      background: var(--green);
+      color: #000;
+      font-size: 17px;
+      font-weight: 900;
       flex: 0 0 auto;
     }
+    #resumoraAuthToast .toast-name {
+      color: var(--green);
+      font-weight: 800;
+    }
     @keyframes resumoraToastIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(-12px) scale(.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     #resumoraAdminBtn { display: none; }
@@ -322,11 +328,13 @@
 </head>
 <body>
 
+<!-- ===== TOAST ===== -->
 <div id="resumoraAuthToast" role="status" aria-live="polite">
   <span class="toast-check">✓</span>
-  <span id="resumoraAuthToastText">Successfully logged in!</span>
+  <span id="resumoraAuthToastText">Successfully logged in, <span class="toast-name" id="toastUserName">User</span>!</span>
 </div>
 
+<!-- ===== NAV ===== -->
 <nav>
   <div class="logo">Resumora</div>
   <div class="nav-actions">
@@ -336,6 +344,7 @@
   </div>
 </nav>
 
+<!-- ===== HERO ===== -->
 <section class="hero">
   <span class="badge">✦ AI-POWERED CAREER TOOLKIT</span>
   <h1>Build a resume that gets <span class="gradient">noticed.</span></h1>
@@ -346,6 +355,7 @@
   </div>
 </section>
 
+<!-- ===== TOOL (hidden until login) ===== -->
 <main class="tool" id="resumeTool" style="display:none;">
   <div class="card">
     <div class="grid">
@@ -385,7 +395,6 @@
       <div class="card"><div class="label">Strengths</div><div id="strengths"></div></div>
       <div class="card"><div class="label">Critical fixes</div><div id="fixes"></div></div>
     </div>
-    <!-- AI Rewrite – only shown to Pro users -->
     <div id="aiRewriteSection" style="display:none; margin-top:18px;">
       <div class="card">
         <div class="label">✨ AI Rewrite & Download</div>
@@ -407,6 +416,7 @@
     </div>
   </div>
 
+  <!-- Reviews -->
   <section id="reviewsSection" style="max-width:980px;margin:70px auto;padding:0 20px">
     <div style="text-align:center;margin-bottom:28px">
       <div class="eyebrow">COMMUNITY</div>
@@ -434,6 +444,7 @@
   </section>
 </main>
 
+<!-- ===== FEATURES ===== -->
 <section class="section">
   <div class="section-inner">
     <h2 class="section-title">Everything you need to get hired</h2>
@@ -446,27 +457,23 @@
   </div>
 </section>
 
-<!-- ===== PRICING – only Pro (₹149) ===== -->
+<!-- ===== PRICING ===== -->
 <section class="section" style="padding-top:15px">
   <div class="section-inner">
     <h2 class="section-title">Simple pricing</h2>
     <p class="section-sub">Start free. Upgrade when you need more.</p>
     <div class="pricing-grid">
-      <!-- Free -->
       <div class="card">
         <h3>Free</h3>
         <div class="price">₹0</div>
         <p class="muted">3 ATS scans (lifetime)<br />Basic keyword analysis<br />Basic improvement tips</p>
         <button class="btn secondary" style="margin-top:18px;width:100%" onclick="openAuth('signup')">Start free</button>
       </div>
-
-      <!-- Pro (₹149, non-refundable) -->
       <div class="card highlight">
         <h3>Pro <span style="font-size:.8rem;color:var(--green);">★</span></h3>
         <div class="price">₹149 <small>one-time</small></div>
         <p class="muted" style="font-size:.8rem;color:var(--red);"><strong>⚠️ Non-refundable</strong></p>
         <p class="muted">Unlimited scans<br />AI rewriting & download<br />Cover letters<br />LinkedIn optimization<br />PDF/DOCX export</p>
-        <!-- Razorpay Payment Button (₹149) -->
         <form>
           <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_TW3eMI6ACiDxKq" async> </script>
         </form>
@@ -477,13 +484,14 @@
   </div>
 </section>
 
+<!-- ===== FOOTER ===== -->
 <footer>
   <p><b>Resumora</b> — Build. Optimize. Get Hired.</p>
   <p style="margin-top:8px">Built by <b>Prathiv Kumar V</b> • © 2026 Prathiv Kumar V. All rights reserved.</p>
   <p style="margin-top:8px">Business enquiries: <a href="mailto:prathivkumar13@outlook.com">prathivkumar13@outlook.com</a> • Privacy • Terms</p>
 </footer>
 
-<!-- Admin Panel -->
+<!-- ===== ADMIN PANEL ===== -->
 <div id="resumoraAdminPanel" role="dialog" aria-modal="true" aria-labelledby="resumoraAdminTitle">
   <div class="admin-card">
     <div class="admin-head">
@@ -501,7 +509,7 @@
       <div class="admin-stat"><strong id="adminPending">—</strong><span>Pending reviews</span></div>
     </div>
     <div class="admin-note">
-      <b>Admin:</b> prathiv132004@gmail.com<br />
+      <b>Admin:</b> prathiv132004@gmail.com (auto-Pro)<br />
       Manage users: upgrade to Pro, reset scan counts.
     </div>
     <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
@@ -512,7 +520,7 @@
   </div>
 </div>
 
-<!-- Auth Modal -->
+<!-- ===== AUTH MODAL ===== -->
 <div class="modal" id="authModal">
   <div class="modal-card">
     <h2 id="authTitle">Create your Resumora account</h2>
@@ -529,7 +537,9 @@
   </div>
 </div>
 
-<!-- ===== SCRIPTS ===== -->
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
 
@@ -539,12 +549,38 @@
   // ============================================================
   const FREE_LIMIT = 3;
   const PDFJS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
+  const ADMIN_EMAIL = "prathiv132004@gmail.com";
   let mode = 'signup';
   const $ = id => document.getElementById(id);
-  let currentUserData = null; // { plan, scansUsed, ... }
+  let currentUserData = null;
 
   // ============================================================
-  // 2. AUTH & USER DATA
+  // 2. TOAST
+  // ============================================================
+  let toastTimer = null;
+
+  function showAuthSuccessToast(user) {
+    const toast = document.getElementById('resumoraAuthToast');
+    const nameEl = document.getElementById('toastUserName');
+    if (!toast) return;
+    const name = user && user.displayName ? user.displayName.split(' ')[0] : 'User';
+    if (nameEl) nameEl.textContent = name;
+    toast.style.display = 'flex';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.style.display = 'none';
+    }, 4000);
+  }
+
+  function checkExistingUserAndShowToast() {
+    const user = window.resumoraCurrentUser;
+    if (user) {
+      showAuthSuccessToast(user);
+    }
+  }
+
+  // ============================================================
+  // 3. AUTH & USER DATA
   // ============================================================
   function handleCta() {
     if (window.resumoraCurrentUser) {
@@ -558,14 +594,24 @@
     try {
       const authApi = await window.resumoraFirebaseReady;
       const doc = await authApi.getDoc(authApi.doc(authApi.db, 'users', uid));
+      const user = window.resumoraCurrentUser;
+      // Check if this is the admin
+      const isAdmin = user && user.email === ADMIN_EMAIL;
+
       if (doc.exists) {
-        return doc.data();
+        const data = doc.data();
+        // If admin, ensure plan is 'pro'
+        if (isAdmin && data.plan !== 'pro') {
+          await authApi.updateDoc(authApi.doc(authApi.db, 'users', uid), { plan: 'pro' });
+          data.plan = 'pro';
+        }
+        return data;
       } else {
-        const user = window.resumoraCurrentUser;
+        // New user – create document
         const newData = {
           email: user.email,
           displayName: user.displayName || 'User',
-          plan: 'free',
+          plan: isAdmin ? 'pro' : 'free',
           scansUsed: 0,
           createdAt: authApi.serverTimestamp()
         };
@@ -627,26 +673,26 @@
   }
 
   // ============================================================
-  // 3. AUTO-UPGRADE FROM PAYMENT (NO BACKEND!)
+  // 4. AUTO-UPGRADE FROM PAYMENT (admin already handled)
   // ============================================================
   async function checkPaymentAndUpgrade() {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentId = urlParams.get('razorpay_payment_id');
     const orderId = urlParams.get('razorpay_order_id');
-    const signature = urlParams.get('razorpay_signature');
 
-    // If we have payment details and the user is logged in, upgrade them
+    // Skip if admin (already Pro)
+    if (window.resumoraCurrentUser && window.resumoraCurrentUser.email === ADMIN_EMAIL) {
+      return;
+    }
+
     if (paymentId && orderId && window.resumoraCurrentUser) {
       try {
         const authApi = await window.resumoraFirebaseReady;
         const uid = window.resumoraCurrentUser.uid;
         const userRef = authApi.doc(authApi.db, 'users', uid);
         await authApi.updateDoc(userRef, { plan: 'pro' });
-        // Refresh UI
         await refreshUserData();
-        // Show success message
         alert('🎉 Payment successful! You are now a Pro user. Enjoy unlimited scans and AI rewrite!');
-        // Clean URL without reloading
         window.history.replaceState({}, document.title, window.location.pathname);
       } catch (e) {
         console.error('Upgrade failed:', e);
@@ -656,7 +702,7 @@
   }
 
   // ============================================================
-  // 4. ANALYZE RESUME
+  // 5. ANALYZE RESUME
   // ============================================================
   async function analyzeResume() {
     const resume = document.getElementById('resumeInput').value.trim();
@@ -677,7 +723,6 @@
       }
     }
 
-    // Run analysis
     const r = words(resume), j = words(jd);
     const stop = new Set(['the','and','for','with','from','that','this','are','you','your','our','have','has','will','job','work','role','years','using','into','their','they','about','not','can','all','who','but','was','were','been','than','also','any','how','what']);
     const keywords = (j.length ? j : r).filter(x => !stop.has(x) && x.length > 3);
@@ -701,7 +746,6 @@
     document.getElementById('results').style.display = 'block';
     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    // Increment scans if free user
     if (currentUserData.plan !== 'pro') {
       try {
         const authApi = await window.resumoraFirebaseReady;
@@ -728,7 +772,7 @@
   }
 
   // ============================================================
-  // 5. AUTH DIALOG & LOGOUT
+  // 6. AUTH DIALOG & LOGOUT
   // ============================================================
   function openAuth(m) {
     mode = m;
@@ -758,7 +802,7 @@
   }
 
   // ============================================================
-  // 6. FILE UPLOAD
+  // 7. FILE UPLOAD
   // ============================================================
   async function extractResumeFile(file) {
     if (!file) return;
@@ -806,7 +850,7 @@
   });
 
   // ============================================================
-  // 7. ADMIN PANEL
+  // 8. ADMIN PANEL
   // ============================================================
   async function loadAdminUsers() {
     const list = document.getElementById('adminUsersList');
@@ -862,13 +906,13 @@
   };
 
   // ============================================================
-  // 8. EVENT BINDINGS & AUTH LISTENERS
+  // 9. EVENT BINDINGS & AUTH LISTENERS
   // ============================================================
   document.addEventListener('resumora-auth-changed', async (e) => {
     const user = e.detail;
     if (user) {
+      showAuthSuccessToast(user);
       updateUIForAuth(user);
-      // Check for payment after login (in case the user paid and then logged in)
       await checkPaymentAndUpgrade();
       if (document.getElementById('resumoraAdminPanel').style.display === 'flex') {
         loadAdminUsers();
@@ -883,12 +927,12 @@
   // Admin panel controls
   document.getElementById('resumoraAdminBtn').addEventListener('click', async () => {
     const user = window.resumoraCurrentUser;
-    if (!user || user.email !== 'prathiv132004@gmail.com') {
+    if (!user || user.email !== ADMIN_EMAIL) {
       alert('Admin access denied.');
       return;
     }
     document.getElementById('resumoraAdminPanel').style.display = 'flex';
-    document.getElementById('resumoraAdminIdentity').textContent = 'Signed in as ' + user.email;
+    document.getElementById('resumoraAdminIdentity').textContent = 'Signed in as ' + user.email + ' (auto-Pro)';
     await loadAdminUsers();
   });
   document.getElementById('resumoraAdminClose').addEventListener('click', () => {
@@ -902,8 +946,9 @@
     document.getElementById('resumoraAdminPanel').style.display = 'none';
   });
 
-  // Check for payment on page load (even before auth)
+  // Check for existing user on page load (toast on refresh)
   window.addEventListener('load', () => {
+    setTimeout(checkExistingUserAndShowToast, 500);
     if (window.resumoraCurrentUser) {
       checkPaymentAndUpgrade();
     }
@@ -911,7 +956,7 @@
 </script>
 
 <!-- ============================================================
-     FIREBASE MODULE (all-in-one)
+     FIREBASE MODULE
      ============================================================ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -963,7 +1008,9 @@
   window.resumoraFirebaseReady = Promise.resolve(window.resumoraAuth);
 </script>
 
-<!-- Hook up review and sign-in buttons -->
+<!-- ============================================================
+     REVIEWS & UI BUTTONS
+     ============================================================ -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('googleAuthMain').addEventListener('click', () => window.signInGoogle());
