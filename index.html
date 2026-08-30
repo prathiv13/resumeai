@@ -15,11 +15,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
-  <!-- html2pdf for PDF download -->
+  <!-- html2pdf -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
-    /* ===== all styles – unchanged ===== */
+    /* ===== all your existing styles – keep exactly as before ===== */
     :root {
       --bg: #080b14;
       --surface: #0f1422;
@@ -572,7 +572,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
 
   <!-- ============================================================
-  MAIN SCRIPT
+  MAIN SCRIPT – FIXED
   ============================================================ -->
   <script>
     // ============================================================
@@ -715,48 +715,6 @@
         currentUserData = data;
         updateDashboard(currentUser, data);
         updateScanInfo();
-      }
-    }
-
-    // ===== FIX: Show tool immediately, then fetch data =====
-    function showTool(user) {
-      const tool = document.getElementById('resumeTool');
-      tool.style.display = 'block';
-      // Update nav
-      document.getElementById('navLoginBtn').textContent = user.displayName || 'Account';
-      document.getElementById('navSignupBtn').style.display = 'none';
-      if (user.email === ADMIN_EMAIL) {
-        document.getElementById('resumoraAdminBtn').style.display = 'inline-block';
-      }
-      // Show toast
-      showAuthSuccessToast(user);
-      // Now fetch data in background
-      refreshUserData().then(() => {
-        // Data loaded, UI updated
-      }).catch(err => console.warn('Data fetch error:', err));
-    }
-
-    // ============================================================
-    // PAYMENT AUTO-UPGRADE
-    // ============================================================
-    async function checkPaymentAndUpgrade() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentId = urlParams.get('razorpay_payment_id');
-      const orderId = urlParams.get('razorpay_order_id');
-
-      if (currentUser && currentUser.email === ADMIN_EMAIL) return;
-
-      if (paymentId && orderId && currentUser) {
-        try {
-          const userRef = db.collection('users').doc(currentUser.uid);
-          await userRef.update({ plan: 'pro' });
-          await refreshUserData();
-          showToastMessage('🎉 Payment successful! You are now <strong>Pro</strong>!');
-          window.history.replaceState({}, document.title, window.location.pathname);
-        } catch (e) {
-          console.error('Upgrade failed:', e);
-          showToastMessage('⚠️ Payment detected but upgrade failed. Contact support.');
-        }
       }
     }
 
@@ -1054,111 +1012,171 @@
     };
 
     // ============================================================
-    // EVENT BINDINGS
+    // EVENT BINDINGS – FIXED
     // ============================================================
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        currentUser = user;
-        // Ensure admin gets Pro
-        if (user.email === ADMIN_EMAIL) {
-          const userRef = db.collection('users').doc(user.uid);
-          const doc = await userRef.get();
-          if (doc.exists) {
-            if (doc.data().plan !== 'pro') {
-              await userRef.update({ plan: 'pro' });
-            }
-          } else {
-            await userRef.set({
-              email: user.email,
-              displayName: user.displayName || 'Admin',
-              plan: 'pro',
-              scansUsed: 0,
-              createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-          }
-        }
-        // Show tool immediately
-        showTool(user);
-        // Check for payment upgrade
-        await checkPaymentAndUpgrade();
-        // If admin panel is open, refresh
-        if (document.getElementById('resumoraAdminPanel').style.display === 'flex') {
-          loadAdminUsers();
-        }
-      } else {
-        currentUser = null;
-        currentUserData = null;
-        document.getElementById('resumeTool').style.display = 'none';
-        document.getElementById('dashboard').classList.remove('show');
-        document.getElementById('navLoginBtn').textContent = 'Log in';
-        document.getElementById('navSignupBtn').style.display = 'inline-block';
-        document.getElementById('resumoraAdminBtn').style.display = 'none';
-        document.getElementById('resumoraAdminPanel').style.display = 'none';
-      }
-    });
-
-    window.addEventListener('load', () => {
-      handleRedirectResult();
-      if (auth.currentUser) {
-        setTimeout(() => showAuthSuccessToast(auth.currentUser), 600);
-      }
-    });
-
-    document.getElementById('resumoraAdminBtn').addEventListener('click', async () => {
-      const user = auth.currentUser;
-      if (!user || user.email !== ADMIN_EMAIL) {
-        alert('Admin access denied.');
-        return;
-      }
-      document.getElementById('resumoraAdminPanel').style.display = 'flex';
-      document.getElementById('resumoraAdminIdentity').textContent = 'Signed in as ' + user.email + ' (auto-Pro)';
-      await loadAdminUsers();
-    });
-    document.getElementById('resumoraAdminClose').addEventListener('click', () => {
-      document.getElementById('resumoraAdminPanel').style.display = 'none';
-    });
-    document.getElementById('adminRefresh').addEventListener('click', loadAdminUsers);
-    document.getElementById('adminSignOut').addEventListener('click', () => {
-      auth.signOut();
-      document.getElementById('resumoraAdminPanel').style.display = 'none';
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', function() {
+      // --- File upload handlers ---
       document.getElementById('fileInput').addEventListener('change', e => extractResumeFile(e.target.files[0]));
       const dropZone = document.getElementById('dropZone');
       dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'rgba(91,140,255,.8)'; });
       dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'rgba(91,140,255,.35)'; });
       dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.style.borderColor = 'rgba(91,140,255,.35)'; const f = e.dataTransfer.files[0]; if (f) extractResumeFile(f); });
-    });
 
-    document.getElementById('googleAuthMain').addEventListener('click', () => signInGoogle());
-    document.getElementById('googleReviewLogin').addEventListener('click', () => {
-      if (!auth.currentUser) signInGoogle();
-    });
-    document.getElementById('submitReview').addEventListener('click', async () => {
-      try {
+      // --- Auth listener ---
+      auth.onAuthStateChanged(async (user) => {
+        console.log('Auth state changed:', user ? 'logged in' : 'logged out');
+        if (user) {
+          currentUser = user;
+          // Ensure admin gets Pro
+          if (user.email === ADMIN_EMAIL) {
+            const userRef = db.collection('users').doc(user.uid);
+            const doc = await userRef.get();
+            if (doc.exists) {
+              if (doc.data().plan !== 'pro') {
+                await userRef.update({ plan: 'pro' });
+              }
+            } else {
+              await userRef.set({
+                email: user.email,
+                displayName: user.displayName || 'Admin',
+                plan: 'pro',
+                scansUsed: 0,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            }
+          }
+          // --- SHOW THE TOOL IMMEDIATELY ---
+          const tool = document.getElementById('resumeTool');
+          if (tool) {
+            tool.style.display = 'block';
+            console.log('Tool displayed');
+          } else {
+            console.error('resumeTool element not found!');
+          }
+
+          // Update nav
+          document.getElementById('navLoginBtn').textContent = user.displayName || 'Account';
+          document.getElementById('navSignupBtn').style.display = 'none';
+          if (user.email === ADMIN_EMAIL) {
+            document.getElementById('resumoraAdminBtn').style.display = 'inline-block';
+          }
+          showAuthSuccessToast(user);
+
+          // Load user data in background
+          refreshUserData().then(() => {
+            // After data loads, update dashboard and scan info
+            console.log('User data loaded:', currentUserData);
+          }).catch(err => console.warn('Data fetch error:', err));
+
+          // Check for payment upgrade
+          await checkPaymentAndUpgrade();
+
+          // If admin panel is open, refresh
+          if (document.getElementById('resumoraAdminPanel').style.display === 'flex') {
+            loadAdminUsers();
+          }
+        } else {
+          currentUser = null;
+          currentUserData = null;
+          const tool = document.getElementById('resumeTool');
+          if (tool) tool.style.display = 'none';
+          document.getElementById('dashboard').classList.remove('show');
+          document.getElementById('navLoginBtn').textContent = 'Log in';
+          document.getElementById('navSignupBtn').style.display = 'inline-block';
+          document.getElementById('resumoraAdminBtn').style.display = 'none';
+          document.getElementById('resumoraAdminPanel').style.display = 'none';
+        }
+      });
+
+      // --- Other UI bindings ---
+      document.getElementById('googleAuthMain').addEventListener('click', () => signInGoogle());
+      document.getElementById('googleReviewLogin').addEventListener('click', () => {
+        if (!auth.currentUser) signInGoogle();
+      });
+      document.getElementById('submitReview').addEventListener('click', async () => {
+        try {
+          const user = auth.currentUser;
+          if (!user) { signInGoogle(); return; }
+          const text = document.getElementById('reviewText').value.trim();
+          const rating = Number(document.getElementById('reviewRating').value);
+          if (text.length < 5) return alert('Please write at least 5 characters.');
+          await db.collection('reviews').add({
+            uid: user.uid,
+            displayName: user.displayName || 'User',
+            photoURL: user.photoURL || '',
+            rating,
+            text,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            approved: false
+          });
+          document.getElementById('reviewText').value = '';
+          alert('Thanks! Your review was submitted for moderation.');
+        } catch (e) {
+          alert('Error: ' + e.message);
+        }
+      });
+
+      // Admin panel controls
+      document.getElementById('resumoraAdminBtn').addEventListener('click', async () => {
         const user = auth.currentUser;
-        if (!user) { signInGoogle(); return; }
-        const text = document.getElementById('reviewText').value.trim();
-        const rating = Number(document.getElementById('reviewRating').value);
-        if (text.length < 5) return alert('Please write at least 5 characters.');
-        await db.collection('reviews').add({
-          uid: user.uid,
-          displayName: user.displayName || 'User',
-          photoURL: user.photoURL || '',
-          rating,
-          text,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          approved: false
-        });
-        document.getElementById('reviewText').value = '';
-        alert('Thanks! Your review was submitted for moderation.');
-      } catch (e) {
-        alert('Error: ' + e.message);
+        if (!user || user.email !== ADMIN_EMAIL) {
+          alert('Admin access denied.');
+          return;
+        }
+        document.getElementById('resumoraAdminPanel').style.display = 'flex';
+        document.getElementById('resumoraAdminIdentity').textContent = 'Signed in as ' + user.email + ' (auto-Pro)';
+        await loadAdminUsers();
+      });
+      document.getElementById('resumoraAdminClose').addEventListener('click', () => {
+        document.getElementById('resumoraAdminPanel').style.display = 'none';
+      });
+      document.getElementById('adminRefresh').addEventListener('click', loadAdminUsers);
+      document.getElementById('adminSignOut').addEventListener('click', () => {
+        auth.signOut();
+        document.getElementById('resumoraAdminPanel').style.display = 'none';
+      });
+
+      // --- Redirect result handler ---
+      handleRedirectResult();
+
+      // --- If user is already logged in when page loads, show tool (safety) ---
+      if (auth.currentUser) {
+        // The onAuthStateChanged will fire, but just in case, we also force show
+        setTimeout(() => {
+          const tool = document.getElementById('resumeTool');
+          if (tool && tool.style.display === 'none') {
+            tool.style.display = 'block';
+            console.log('Tool shown via fallback');
+          }
+        }, 1000);
       }
     });
 
-    console.log('🔥 Resumora loaded successfully.');
+    // ============================================================
+    // PAYMENT AUTO-UPGRADE (called after login)
+    // ============================================================
+    async function checkPaymentAndUpgrade() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentId = urlParams.get('razorpay_payment_id');
+      const orderId = urlParams.get('razorpay_order_id');
+
+      if (currentUser && currentUser.email === ADMIN_EMAIL) return;
+
+      if (paymentId && orderId && currentUser) {
+        try {
+          const userRef = db.collection('users').doc(currentUser.uid);
+          await userRef.update({ plan: 'pro' });
+          await refreshUserData();
+          showToastMessage('🎉 Payment successful! You are now <strong>Pro</strong>!');
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (e) {
+          console.error('Upgrade failed:', e);
+          showToastMessage('⚠️ Payment detected but upgrade failed. Contact support.');
+        }
+      }
+    }
+
+    console.log('🔥 Resumora loaded. Waiting for auth state...');
   </script>
 
 </body>
