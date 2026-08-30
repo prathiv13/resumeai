@@ -10,12 +10,20 @@
   <meta name="google-adsense-account" content="ca-pub-3788898744825788" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3788898744825788" crossorigin="anonymous"></script>
 
+  <!-- ===== FIREBASE SDK (Compat – no modules) ===== -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js">
+  </script>
+
   <style>
     :root {
       --bg: #080b14;
       --surface: #0f1422;
       --card: #151b2b;
-      --border: rgba(255,255,255,.09);
+      --border: rgba(255, 255, 255, .09);
       --text: #f5f7fb;
       --muted: #9aa6ba;
       --blue: #5b8cff;
@@ -25,15 +33,25 @@
       --yellow: #f4b740;
       --radius: 18px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at 50% -10%, rgba(91,140,255,.18), transparent 38%), var(--bg);
+      background: radial-gradient(circle at 50% -10%, rgba(91, 140, 255, .18), transparent 38%), var(--bg);
       color: var(--text);
       line-height: 1.6;
     }
-    button, input, textarea { font: inherit; }
-    button { cursor: pointer; }
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
     nav {
       height: 72px;
       padding: 0 5%;
@@ -41,7 +59,7 @@
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--border);
-      background: rgba(8,11,20,.82);
+      background: rgba(8, 11, 20, .82);
       backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
@@ -56,7 +74,10 @@
       background-clip: text;
       color: transparent;
     }
-    .nav-actions { display: flex; gap: 10px; }
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+    }
     .btn {
       border: 0;
       border-radius: 11px;
@@ -65,9 +86,18 @@
       color: white;
       background: linear-gradient(110deg, #4078ff, #8d58ee);
     }
-    .btn.secondary { background: rgba(255,255,255,.06); border: 1px solid var(--border); }
-    .btn.large { padding: 14px 22px; font-size: 1rem; }
-    .btn:disabled { opacity: 0.5; pointer-events: none; }
+    .btn.secondary {
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid var(--border);
+    }
+    .btn.large {
+      padding: 14px 22px;
+      font-size: 1rem;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
     .hero {
       max-width: 1050px;
       margin: auto;
@@ -77,10 +107,10 @@
     .badge {
       display: inline-flex;
       padding: 6px 12px;
-      border: 1px solid rgba(91,140,255,.3);
+      border: 1px solid rgba(91, 140, 255, .3);
       border-radius: 30px;
       color: #a9c1ff;
-      background: rgba(91,140,255,.08);
+      background: rgba(91, 140, 255, .08);
       font-size: .78rem;
       font-weight: 800;
     }
@@ -97,18 +127,41 @@
       background-clip: text;
       color: transparent;
     }
-    .hero p { max-width: 650px; margin: auto; color: var(--muted); font-size: 1.08rem; }
-    .hero-cta { margin-top: 28px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-    .tool { max-width: 1050px; margin: auto; padding: 20px; }
+    .hero p {
+      max-width: 650px;
+      margin: auto;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+    .hero-cta {
+      margin-top: 28px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .tool {
+      max-width: 1050px;
+      margin: auto;
+      padding: 20px;
+    }
     .card {
-      background: rgba(21,27,43,.82);
+      background: rgba(21, 27, 43, .82);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 22px;
-      box-shadow: 0 18px 50px rgba(0,0,0,.16);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .16);
     }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    @media (max-width: 780px) { .grid { grid-template-columns: 1fr; } }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 780px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
     .label {
       font-size: .78rem;
       text-transform: uppercase;
@@ -117,33 +170,71 @@
       font-weight: 850;
       margin-bottom: 9px;
     }
-    textarea, input {
+    textarea,
+    input {
       width: 100%;
       border: 1px solid var(--border);
-      background: rgba(255,255,255,.035);
+      background: rgba(255, 255, 255, .035);
       color: var(--text);
       border-radius: 12px;
       padding: 13px;
       outline: none;
     }
-    textarea:focus, input:focus { border-color: rgba(91,140,255,.6); box-shadow: 0 0 0 3px rgba(91,140,255,.1); }
-    textarea { min-height: 280px; resize: vertical; }
+    textarea:focus,
+    input:focus {
+      border-color: rgba(91, 140, 255, .6);
+      box-shadow: 0 0 0 3px rgba(91, 140, 255, .1);
+    }
+    textarea {
+      min-height: 280px;
+      resize: vertical;
+    }
     .upload {
-      border: 1.5px dashed rgba(91,140,255,.35);
+      border: 1.5px dashed rgba(91, 140, 255, .35);
       border-radius: 14px;
       padding: 28px;
       text-align: center;
-      background: rgba(91,140,255,.04);
+      background: rgba(91, 140, 255, .04);
       margin-bottom: 12px;
     }
-    .upload strong { display: block; font-size: 1rem; }
-    .upload span { display: block; color: var(--muted); font-size: .82rem; margin: 5px 0 13px; }
-    #fileInput { display: none; }
-    .file-name { font-size: .82rem; color: #a9c1ff; margin-top: 9px; min-height: 20px; }
-    .notice { font-size: .76rem; color: var(--muted); margin-top: 10px; }
-    .analyze { width: 100%; margin-top: 18px; }
-    .results { display: none; margin-top: 18px; }
-    .score { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+    .upload strong {
+      display: block;
+      font-size: 1rem;
+    }
+    .upload span {
+      display: block;
+      color: var(--muted);
+      font-size: .82rem;
+      margin: 5px 0 13px;
+    }
+    #fileInput {
+      display: none;
+    }
+    .file-name {
+      font-size: .82rem;
+      color: #a9c1ff;
+      margin-top: 9px;
+      min-height: 20px;
+    }
+    .notice {
+      font-size: .76rem;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .analyze {
+      width: 100%;
+      margin-top: 18px;
+    }
+    .results {
+      display: none;
+      margin-top: 18px;
+    }
+    .score {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
     .score-num {
       font-size: 3.2rem;
       font-weight: 950;
@@ -159,34 +250,97 @@
       padding: 4px 10px;
       font-size: .75rem;
       font-weight: 800;
-      background: rgba(40,201,151,.1);
+      background: rgba(40, 201, 151, .1);
       color: #70e3bf;
     }
-    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
-    @media (max-width: 780px) { .result-grid { grid-template-columns: 1fr; } }
-    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    @media (max-width: 780px) {
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
     .chip {
       padding: 5px 9px;
       border-radius: 20px;
       font-size: .75rem;
-      background: rgba(91,140,255,.1);
-      border: 1px solid rgba(91,140,255,.18);
+      background: rgba(91, 140, 255, .1);
+      border: 1px solid rgba(91, 140, 255, .18);
       color: #b7c9ff;
     }
-    .chip.missing { background: rgba(255,100,124,.08); border-color: rgba(255,100,124,.18); color: #ff9cad; }
-    .item { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .88rem; }
-    .item:last-child { border-bottom: 0; }
-    .section { padding: 75px 20px; }
-    .section-inner { max-width: 1050px; margin: auto; }
-    .section-title { text-align: center; font-size: 2rem; letter-spacing: -.035em; }
-    .section-sub { text-align: center; color: var(--muted); max-width: 620px; margin: 8px auto 30px; }
-    .feature-grid, .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    @media (max-width: 850px) { .feature-grid, .pricing-grid { grid-template-columns: 1fr; } }
-    .feature h3 { margin: 10px 0 4px; }
-    .feature p { color: var(--muted); font-size: .86rem; }
-    .price { font-size: 2rem; font-weight: 900; margin: 10px 0; }
-    .price small { font-size: .8rem; color: var(--muted); font-weight: 500; }
-    .highlight { border-color: rgba(155,108,255,.45); box-shadow: 0 0 40px rgba(155,108,255,.08); }
+    .chip.missing {
+      background: rgba(255, 100, 124, .08);
+      border-color: rgba(255, 100, 124, .18);
+      color: #ff9cad;
+    }
+    .item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: .88rem;
+    }
+    .item:last-child {
+      border-bottom: 0;
+    }
+    .section {
+      padding: 75px 20px;
+    }
+    .section-inner {
+      max-width: 1050px;
+      margin: auto;
+    }
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      letter-spacing: -.035em;
+    }
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      max-width: 620px;
+      margin: 8px auto 30px;
+    }
+    .feature-grid,
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 850px) {
+      .feature-grid,
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .feature h3 {
+      margin: 10px 0 4px;
+    }
+    .feature p {
+      color: var(--muted);
+      font-size: .86rem;
+    }
+    .price {
+      font-size: 2rem;
+      font-weight: 900;
+      margin: 10px 0;
+    }
+    .price small {
+      font-size: .8rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .highlight {
+      border-color: rgba(155, 108, 255, .45);
+      box-shadow: 0 0 40px rgba(155, 108, 255, .08);
+    }
     footer {
       border-top: 1px solid var(--border);
       padding: 35px 20px;
@@ -194,18 +348,22 @@
       color: var(--muted);
       font-size: .8rem;
     }
-    footer b { color: var(--text); }
+    footer b {
+      color: var(--text);
+    }
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.72);
+      background: rgba(0, 0, 0, .72);
       display: none;
       align-items: center;
       justify-content: center;
       padding: 20px;
       z-index: 100;
     }
-    .modal.show { display: flex; }
+    .modal.show {
+      display: flex;
+    }
     .modal-card {
       width: min(430px, 100%);
       background: #111725;
@@ -213,17 +371,52 @@
       border-radius: 20px;
       padding: 25px;
     }
-    .modal-card h2 { margin-bottom: 4px; }
-    .modal-card p { color: var(--muted); font-size: .84rem; margin-bottom: 18px; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: 5px; }
-    .form-actions { display: flex; gap: 9px; margin-top: 15px; }
-    .form-actions button { flex: 1; }
-    .dashboard { display: none; margin-top: 18px; }
-    .dashboard.show { display: block; }
-    .account { display: flex; justify-content: space-between; gap: 15px; align-items: center; flex-wrap: wrap; }
-    small.muted { color: var(--muted); }
-    a { color: #9eb7ff; text-decoration: none; }
+    .modal-card h2 {
+      margin-bottom: 4px;
+    }
+    .modal-card p {
+      color: var(--muted);
+      font-size: .84rem;
+      margin-bottom: 18px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-group label {
+      display: block;
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .form-actions {
+      display: flex;
+      gap: 9px;
+      margin-top: 15px;
+    }
+    .form-actions button {
+      flex: 1;
+    }
+    .dashboard {
+      display: none;
+      margin-top: 18px;
+    }
+    .dashboard.show {
+      display: block;
+    }
+    .account {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    small.muted {
+      color: var(--muted);
+    }
+    a {
+      color: #9eb7ff;
+      text-decoration: none;
+    }
 
     #resumoraAuthToast {
       position: fixed;
@@ -236,17 +429,18 @@
       max-width: min(420px, calc(100vw - 44px));
       padding: 16px 22px;
       border-radius: 14px;
-      background: rgba(20,25,32,.96);
+      background: rgba(20, 25, 32, .96);
       color: #fff;
-      border: 1px solid rgba(40,201,151,.4);
-      box-shadow: 0 14px 50px rgba(0,0,0,.5);
+      border: 1px solid rgba(40, 201, 151, .4);
+      box-shadow: 0 14px 50px rgba(0, 0, 0, .5);
       font-weight: 600;
       font-size: 15px;
       animation: resumoraToastIn .35s ease;
       backdrop-filter: blur(12px);
     }
     #resumoraAuthToast .toast-check {
-      width: 28px; height: 28px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: grid;
       place-items: center;
@@ -261,17 +455,25 @@
       font-weight: 800;
     }
     @keyframes resumoraToastIn {
-      from { opacity: 0; transform: translateY(-12px) scale(.96); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(-12px) scale(.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
-    #resumoraAdminBtn { display: none; }
+    #resumoraAdminBtn {
+      display: none;
+    }
     #resumoraAdminPanel {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 10020;
-      background: rgba(0,0,0,.78);
+      background: rgba(0, 0, 0, .78);
       align-items: center;
       justify-content: center;
       padding: 18px;
@@ -281,20 +483,59 @@
       max-height: 90vh;
       overflow: auto;
       background: #111725;
-      border: 1px solid rgba(255,255,255,.12);
+      border: 1px solid rgba(255, 255, 255, .12);
       border-radius: 22px;
       padding: 24px;
-      box-shadow: 0 30px 100px rgba(0,0,0,.5);
+      box-shadow: 0 30px 100px rgba(0, 0, 0, .5);
     }
-    .admin-head { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px; }
-    .admin-head h2 { margin: 0; }
-    .admin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .admin-stat { background: rgba(255,255,255,.045); border: 1px solid var(--border); border-radius: 15px; padding: 16px; }
-    .admin-stat strong { display: block; font-size: 1.7rem; }
-    .admin-stat span { color: var(--muted); font-size: .78rem; }
-    .admin-note { margin-top: 16px; padding: 14px; border-radius: 12px; background: rgba(244,183,64,.08); border: 1px solid rgba(244,183,64,.18); color: #f4d27d; font-size: .82rem; }
-    @media (max-width: 800px) { .admin-grid { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 500px) { .admin-grid { grid-template-columns: 1fr; } }
+    .admin-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .admin-head h2 {
+      margin: 0;
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .admin-stat {
+      background: rgba(255, 255, 255, .045);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 16px;
+    }
+    .admin-stat strong {
+      display: block;
+      font-size: 1.7rem;
+    }
+    .admin-stat span {
+      color: var(--muted);
+      font-size: .78rem;
+    }
+    .admin-note {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(244, 183, 64, .08);
+      border: 1px solid rgba(244, 183, 64, .18);
+      color: #f4d27d;
+      font-size: .82rem;
+    }
+    @media (max-width: 800px) {
+      .admin-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 500px) {
+      .admin-grid {
+        grid-template-columns: 1fr;
+      }
+    }
 
     .razorpay-payment-button {
       display: inline-block;
@@ -311,8 +552,12 @@
       text-align: center !important;
       transition: opacity 0.2s;
     }
-    .razorpay-payment-button:hover { opacity: 0.85; }
-    .pricing-grid form { margin: 0; }
+    .razorpay-payment-button:hover {
+      opacity: 0.85;
+    }
+    .pricing-grid form {
+      margin: 0;
+    }
 
     .pro-badge {
       display: inline-block;
@@ -328,710 +573,776 @@
 </head>
 <body>
 
-<!-- ===== TOAST ===== -->
-<div id="resumoraAuthToast" role="status" aria-live="polite">
-  <span class="toast-check">✓</span>
-  <span id="resumoraAuthToastText">Successfully logged in, <span class="toast-name" id="toastUserName">User</span>!</span>
-</div>
-
-<!-- ===== NAV ===== -->
-<nav>
-  <div class="logo">Resumora</div>
-  <div class="nav-actions">
-    <button id="resumoraAdminBtn" class="btn secondary" type="button">👑 Admin</button>
-    <button class="btn secondary" onclick="openAuth('login')">Log in</button>
-    <button class="btn" onclick="openAuth('signup')">Sign up free</button>
-  </div>
-</nav>
-
-<!-- ===== HERO ===== -->
-<section class="hero">
-  <span class="badge">✦ AI-POWERED CAREER TOOLKIT</span>
-  <h1>Build a resume that gets <span class="gradient">noticed.</span></h1>
-  <p>Analyze your ATS score, match your resume to a job description, discover missing keywords and improve your application — all in one place.</p>
-  <div class="hero-cta">
-    <button class="btn large" onclick="handleCta()">Check my resume free →</button>
-    <button class="btn secondary large" onclick="openAuth('signup')">Create account</button>
-  </div>
-</section>
-
-<!-- ===== TOOL (hidden until login) ===== -->
-<main class="tool" id="resumeTool" style="display:none;">
-  <div class="card">
-    <div class="grid">
-      <div>
-        <div class="label">Your resume</div>
-        <div class="upload" id="dropZone">
-          <strong>📄 Upload PDF, DOC or DOCX</strong>
-          <span>Drag & drop your file here, or choose a file</span>
-          <label class="btn secondary" for="fileInput">Choose resume</label>
-          <input id="fileInput" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-          <div class="file-name" id="fileName"></div>
-        </div>
-        <textarea id="resumeInput" placeholder="Or paste your resume text here..."></textarea>
-        <div class="notice">🔒 Your resume is stored securely in your account.</div>
-      </div>
-      <div>
-        <div class="label">Target job description <span style="font-weight:500;text-transform:none;letter-spacing:0">(recommended)</span></div>
-        <textarea id="jdInput" placeholder="Paste the job description here. Resumora will compare the role requirements with your resume."></textarea>
-        <button class="btn large analyze" onclick="analyzeResume()">✨ Analyze my resume</button>
-        <div id="scanInfo" class="notice"></div>
-      </div>
-    </div>
+  <!-- ===== TOAST ===== -->
+  <div id="resumoraAuthToast" role="status" aria-live="polite">
+    <span class="toast-check">✓</span>
+    <span id="resumoraAuthToastText">Successfully logged in, <span class="toast-name" id="toastUserName">User</span>!</span>
   </div>
 
-  <div class="results" id="results">
-    <div class="card score">
-      <div class="score-num" id="score">0</div>
-      <div>
-        <h2 id="tier">ATS analysis</h2>
-        <p id="summary" style="color:var(--muted)"></p>
-        <span class="pill">Resume analysis complete</span>
-      </div>
+  <!-- ===== NAV ===== -->
+  <nav>
+    <div class="logo">Resumora</div>
+    <div class="nav-actions">
+      <button id="resumoraAdminBtn" class="btn secondary" type="button">👑 Admin</button>
+      <button class="btn secondary" id="navLoginBtn" onclick="openAuth('login')">Log in</button>
+      <button class="btn" id="navSignupBtn" onclick="openAuth('signup')">Sign up free</button>
     </div>
-    <div class="result-grid">
-      <div class="card"><div class="label">Matched keywords</div><div class="chips" id="matched"></div></div>
-      <div class="card"><div class="label">Missing keywords</div><div class="chips" id="missing"></div></div>
-      <div class="card"><div class="label">Strengths</div><div id="strengths"></div></div>
-      <div class="card"><div class="label">Critical fixes</div><div id="fixes"></div></div>
-    </div>
-    <div id="aiRewriteSection" style="display:none; margin-top:18px;">
-      <div class="card">
-        <div class="label">✨ AI Rewrite & Download</div>
-        <p style="color:var(--muted); margin-bottom:12px;">Get a professionally rewritten version of your resume with ATS-optimized bullet points.</p>
-        <button class="btn" onclick="alert('AI rewrite will be available soon.')">Download AI Rewritten Resume (PDF/DOCX)</button>
-      </div>
-    </div>
-  </div>
+  </nav>
 
-  <div class="dashboard card" id="dashboard">
-    <div class="account">
-      <div>
-        <div class="label">Your account</div>
-        <h2 id="accountName">Welcome</h2>
-        <small class="muted" id="accountEmail"></small>
-        <span id="planBadge" class="pro-badge" style="display:none;">PRO</span>
-      </div>
-      <button class="btn secondary" onclick="logout()">Log out</button>
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <span class="badge">✦ AI-POWERED CAREER TOOLKIT</span>
+    <h1>Build a resume that gets <span class="gradient">noticed.</span></h1>
+    <p>Analyze your ATS score, match your resume to a job description, discover missing keywords and improve your application — all in one place.</p>
+    <div class="hero-cta">
+      <button class="btn large" onclick="handleCta()">Check my resume free →</button>
+      <button class="btn secondary large" onclick="openAuth('signup')">Create account</button>
     </div>
-  </div>
-
-  <!-- Reviews -->
-  <section id="reviewsSection" style="max-width:980px;margin:70px auto;padding:0 20px">
-    <div style="text-align:center;margin-bottom:28px">
-      <div class="eyebrow">COMMUNITY</div>
-      <h2 style="font-size:clamp(2rem,4vw,3rem);margin:8px 0">What users say</h2>
-      <p style="opacity:.7">Signed-in users can share their experience with Resumora.</p>
-    </div>
-    <div id="reviewAuthBox" style="padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:20px">
-      <button class="btn" id="googleReviewLogin">Continue with Google</button>
-      <span id="reviewAuthStatus" style="margin-left:10px;opacity:.7"></span>
-    </div>
-    <div id="reviewForm" style="display:none;padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:25px">
-      <label>Rating</label>
-      <select id="reviewRating" style="margin:8px 0 14px;padding:10px;border-radius:10px">
-        <option value="5">★★★★★ — Excellent</option>
-        <option value="4">★★★★☆ — Great</option>
-        <option value="3">★★★☆☆ — Good</option>
-        <option value="2">★★☆☆☆ — Needs improvement</option>
-        <option value="1">★☆☆☆☆ — Poor</option>
-      </select>
-      <label>Your review</label>
-      <textarea id="reviewText" maxlength="800" rows="4" placeholder="Tell us about your experience…" style="width:100%;margin:8px 0 14px;padding:12px;border-radius:10px"></textarea>
-      <button class="btn" id="submitReview">Post review</button>
-    </div>
-    <div id="reviewsList"></div>
   </section>
-</main>
 
-<!-- ===== FEATURES ===== -->
-<section class="section">
-  <div class="section-inner">
-    <h2 class="section-title">Everything you need to get hired</h2>
-    <p class="section-sub">Resumora is designed to grow from an ATS checker into a complete career toolkit.</p>
-    <div class="feature-grid">
-      <div class="card feature"><div style="font-size:1.7rem">🎯</div><h3>ATS Analysis</h3><p>See strengths, gaps and job-description keyword alignment.</p></div>
-      <div class="card feature"><div style="font-size:1.7rem">✍️</div><h3>AI Resume Rewrite</h3><p>Transform weak bullets and summaries into stronger, achievement-focused copy.</p></div>
-      <div class="card feature"><div style="font-size:1.7rem">💼</div><h3>Career Toolkit</h3><p>Expand into cover letters, LinkedIn optimization and interview preparation.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== PRICING ===== -->
-<section class="section" style="padding-top:15px">
-  <div class="section-inner">
-    <h2 class="section-title">Simple pricing</h2>
-    <p class="section-sub">Start free. Upgrade when you need more.</p>
-    <div class="pricing-grid">
-      <div class="card">
-        <h3>Free</h3>
-        <div class="price">₹0</div>
-        <p class="muted">3 ATS scans (lifetime)<br />Basic keyword analysis<br />Basic improvement tips</p>
-        <button class="btn secondary" style="margin-top:18px;width:100%" onclick="openAuth('signup')">Start free</button>
-      </div>
-      <div class="card highlight">
-        <h3>Pro <span style="font-size:.8rem;color:var(--green);">★</span></h3>
-        <div class="price">₹149 <small>one-time</small></div>
-        <p class="muted" style="font-size:.8rem;color:var(--red);"><strong>⚠️ Non-refundable</strong></p>
-        <p class="muted">Unlimited scans<br />AI rewriting & download<br />Cover letters<br />LinkedIn optimization<br />PDF/DOCX export</p>
-        <form>
-          <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_TW3eMI6ACiDxKq" async> </script>
-        </form>
-        <p style="font-size:.7rem;color:var(--muted);margin-top:6px;">You'll be upgraded automatically after payment.</p>
+  <!-- ===== TOOL (hidden until login) ===== -->
+  <main class="tool" id="resumeTool" style="display:none;">
+    <div class="card">
+      <div class="grid">
+        <div>
+          <div class="label">Your resume</div>
+          <div class="upload" id="dropZone">
+            <strong>📄 Upload PDF, DOC or DOCX</strong>
+            <span>Drag & drop your file here, or choose a file</span>
+            <label class="btn secondary" for="fileInput">Choose resume</label>
+            <input id="fileInput" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+            <div class="file-name" id="fileName"></div>
+          </div>
+          <textarea id="resumeInput" placeholder="Or paste your resume text here..."></textarea>
+          <div class="notice">🔒 Your resume is stored securely in your account.</div>
+        </div>
+        <div>
+          <div class="label">Target job description <span style="font-weight:500;text-transform:none;letter-spacing:0">(recommended)</span></div>
+          <textarea id="jdInput" placeholder="Paste the job description here. Resumora will compare the role requirements with your resume."></textarea>
+          <button class="btn large analyze" onclick="analyzeResume()">✨ Analyze my resume</button>
+          <div id="scanInfo" class="notice"></div>
+        </div>
       </div>
     </div>
-    <p class="notice" style="text-align:center;margin-top:18px">🔒 Secure payments powered by Razorpay.</p>
-  </div>
-</section>
 
-<!-- ===== FOOTER ===== -->
-<footer>
-  <p><b>Resumora</b> — Build. Optimize. Get Hired.</p>
-  <p style="margin-top:8px">Built by <b>Prathiv Kumar V</b> • © 2026 Prathiv Kumar V. All rights reserved.</p>
-  <p style="margin-top:8px">Business enquiries: <a href="mailto:prathivkumar13@outlook.com">prathivkumar13@outlook.com</a> • Privacy • Terms</p>
-</footer>
-
-<!-- ===== ADMIN PANEL ===== -->
-<div id="resumoraAdminPanel" role="dialog" aria-modal="true" aria-labelledby="resumoraAdminTitle">
-  <div class="admin-card">
-    <div class="admin-head">
-      <div>
-        <div class="label">RESUMORA CONTROL CENTER</div>
-        <h2 id="resumoraAdminTitle">👑 Admin God Mode</h2>
-        <div id="resumoraAdminIdentity" class="notice"></div>
+    <div class="results" id="results">
+      <div class="card score">
+        <div class="score-num" id="score">0</div>
+        <div>
+          <h2 id="tier">ATS analysis</h2>
+          <p id="summary" style="color:var(--muted)"></p>
+          <span class="pill">Resume analysis complete</span>
+        </div>
       </div>
-      <button class="btn secondary" type="button" id="resumoraAdminClose">Close</button>
+      <div class="result-grid">
+        <div class="card"><div class="label">Matched keywords</div><div class="chips" id="matched"></div></div>
+        <div class="card"><div class="label">Missing keywords</div><div class="chips" id="missing"></div></div>
+        <div class="card"><div class="label">Strengths</div><div id="strengths"></div></div>
+        <div class="card"><div class="label">Critical fixes</div><div id="fixes"></div></div>
+      </div>
+      <div id="aiRewriteSection" style="display:none; margin-top:18px;">
+        <div class="card">
+          <div class="label">✨ AI Rewrite & Download</div>
+          <p style="color:var(--muted); margin-bottom:12px;">Get a professionally rewritten version of your resume with ATS-optimized bullet points.</p>
+          <button class="btn" onclick="alert('AI rewrite will be available soon.')">Download AI Rewritten Resume (PDF/DOCX)</button>
+        </div>
+      </div>
     </div>
-    <div class="admin-grid">
-      <div class="admin-stat"><strong id="adminUsers">—</strong><span>Total users</span></div>
-      <div class="admin-stat"><strong id="adminProUsers">—</strong><span>Pro users</span></div>
-      <div class="admin-stat"><strong id="adminReviews">—</strong><span>Reviews</span></div>
-      <div class="admin-stat"><strong id="adminPending">—</strong><span>Pending reviews</span></div>
+
+    <div class="dashboard card" id="dashboard">
+      <div class="account">
+        <div>
+          <div class="label">Your account</div>
+          <h2 id="accountName">Welcome</h2>
+          <small class="muted" id="accountEmail"></small>
+          <span id="planBadge" class="pro-badge" style="display:none;">PRO</span>
+        </div>
+        <button class="btn secondary" onclick="logout()">Log out</button>
+      </div>
     </div>
-    <div class="admin-note">
-      <b>Admin:</b> prathiv132004@gmail.com (auto-Pro)<br />
-      Manage users: upgrade to Pro, reset scan counts.
+
+    <!-- Reviews -->
+    <section id="reviewsSection" style="max-width:980px;margin:70px auto;padding:0 20px">
+      <div style="text-align:center;margin-bottom:28px">
+        <div class="eyebrow">COMMUNITY</div>
+        <h2 style="font-size:clamp(2rem,4vw,3rem);margin:8px 0">What users say</h2>
+        <p style="opacity:.7">Signed-in users can share their experience with Resumora.</p>
+      </div>
+      <div id="reviewAuthBox" style="padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:20px">
+        <button class="btn" id="googleReviewLogin">Continue with Google</button>
+        <span id="reviewAuthStatus" style="margin-left:10px;opacity:.7"></span>
+      </div>
+      <div id="reviewForm" style="display:none;padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:25px">
+        <label>Rating</label>
+        <select id="reviewRating" style="margin:8px 0 14px;padding:10px;border-radius:10px">
+          <option value="5">★★★★★ — Excellent</option>
+          <option value="4">★★★★☆ — Great</option>
+          <option value="3">★★★☆☆ — Good</option>
+          <option value="2">★★☆☆☆ — Needs improvement</option>
+          <option value="1">★☆☆☆☆ — Poor</option>
+        </select>
+        <label>Your review</label>
+        <textarea id="reviewText" maxlength="800" rows="4" placeholder="Tell us about your experience…" style="width:100%;margin:8px 0 14px;padding:12px;border-radius:10px"></textarea>
+        <button class="btn" id="submitReview">Post review</button>
+      </div>
+      <div id="reviewsList"></div>
+    </section>
+  </main>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="section">
+    <div class="section-inner">
+      <h2 class="section-title">Everything you need to get hired</h2>
+      <p class="section-sub">Resumora is designed to grow from an ATS checker into a complete career toolkit.</p>
+      <div class="feature-grid">
+        <div class="card feature"><div style="font-size:1.7rem">🎯</div>
+          <h3>ATS Analysis</h3>
+          <p>See strengths, gaps and job-description keyword alignment.</p>
+        </div>
+        <div class="card feature"><div style="font-size:1.7rem">✍️</div>
+          <h3>AI Resume Rewrite</h3>
+          <p>Transform weak bullets and summaries into stronger, achievement-focused copy.</p>
+        </div>
+        <div class="card feature"><div style="font-size:1.7rem">💼</div>
+          <h3>Career Toolkit</h3>
+          <p>Expand into cover letters, LinkedIn optimization and interview preparation.</p>
+        </div>
+      </div>
     </div>
-    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn" type="button" id="adminRefresh">Refresh data</button>
-      <button class="btn secondary" type="button" id="adminSignOut">Sign out</button>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section class="section" style="padding-top:15px">
+    <div class="section-inner">
+      <h2 class="section-title">Simple pricing</h2>
+      <p class="section-sub">Start free. Upgrade when you need more.</p>
+      <div class="pricing-grid">
+        <div class="card">
+          <h3>Free</h3>
+          <div class="price">₹0</div>
+          <p class="muted">3 ATS scans (lifetime)<br />Basic keyword analysis<br />Basic improvement tips</p>
+          <button class="btn secondary" style="margin-top:18px;width:100%" onclick="openAuth('signup')">Start free</button>
+        </div>
+        <div class="card highlight">
+          <h3>Pro <span style="font-size:.8rem;color:var(--green);">★</span></h3>
+          <div class="price">₹149 <small>one-time</small></div>
+          <p class="muted" style="font-size:.8rem;color:var(--red);"><strong>⚠️ Non-refundable</strong></p>
+          <p class="muted">Unlimited scans<br />AI rewriting & download<br />Cover letters<br />LinkedIn optimization<br />PDF/DOCX export</p>
+          <form>
+            <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_TW3eMI6ACiDxKq" async>
+            </script>
+          </form>
+          <p style="font-size:.7rem;color:var(--muted);margin-top:6px;">You'll be upgraded automatically after payment.</p>
+        </div>
+      </div>
+      <p class="notice" style="text-align:center;margin-top:18px">🔒 Secure payments powered by Razorpay.</p>
     </div>
-    <div id="adminUsersList" style="margin-top:18px;max-height:400px;overflow:auto;"></div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p><b>Resumora</b> — Build. Optimize. Get Hired.</p>
+    <p style="margin-top:8px">Built by <b>Prathiv Kumar V</b> • © 2026 Prathiv Kumar V. All rights reserved.</p>
+    <p style="margin-top:8px">Business enquiries: <a href="mailto:prathivkumar13@outlook.com">prathivkumar13@outlook.com</a> • Privacy • Terms</p>
+  </footer>
+
+  <!-- ===== ADMIN PANEL ===== -->
+  <div id="resumoraAdminPanel" role="dialog" aria-modal="true" aria-labelledby="resumoraAdminTitle">
+    <div class="admin-card">
+      <div class="admin-head">
+        <div>
+          <div class="label">RESUMORA CONTROL CENTER</div>
+          <h2 id="resumoraAdminTitle">👑 Admin God Mode</h2>
+          <div id="resumoraAdminIdentity" class="notice"></div>
+        </div>
+        <button class="btn secondary" type="button" id="resumoraAdminClose">Close</button>
+      </div>
+      <div class="admin-grid">
+        <div class="admin-stat"><strong id="adminUsers">—</strong><span>Total users</span></div>
+        <div class="admin-stat"><strong id="adminProUsers">—</strong><span>Pro users</span></div>
+        <div class="admin-stat"><strong id="adminReviews">—</strong><span>Reviews</span></div>
+        <div class="admin-stat"><strong id="adminPending">—</strong><span>Pending reviews</span></div>
+      </div>
+      <div class="admin-note">
+        <b>Admin:</b> prathiv132004@gmail.com (auto-Pro)<br />
+        Manage users: upgrade to Pro, reset scan counts.
+      </div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" type="button" id="adminRefresh">Refresh data</button>
+        <button class="btn secondary" type="button" id="adminSignOut">Sign out</button>
+      </div>
+      <div id="adminUsersList" style="margin-top:18px;max-height:400px;overflow:auto;"></div>
+    </div>
   </div>
-</div>
 
-<!-- ===== AUTH MODAL ===== -->
-<div class="modal" id="authModal">
-  <div class="modal-card">
-    <h2 id="authTitle">Create your Resumora account</h2>
-    <p id="authDesc">Save your resumes and access your tools across sessions.</p>
-    <div class="form-group" id="nameGroup"><label>Full name</label><input id="authName" placeholder="Your name" /></div>
-    <div class="form-group"><label>Email</label><input id="authEmail" type="email" placeholder="you@example.com" /></div>
-    <div class="form-group"><label>Password</label><input id="authPassword" type="password" placeholder="••••••••" /></div>
-    <div class="form-actions"><button class="btn secondary" onclick="closeAuth()">Cancel</button><button class="btn" onclick="submitAuth()">Continue</button></div>
-    <div style="display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--muted);font-size:.82rem">
-      <span style="height:1px;background:rgba(255,255,255,.12);flex:1"></span><span>OR</span><span style="height:1px;background:rgba(255,255,255,.12);flex:1"></span>
+  <!-- ===== AUTH MODAL ===== -->
+  <div class="modal" id="authModal">
+    <div class="modal-card">
+      <h2 id="authTitle">Create your Resumora account</h2>
+      <p id="authDesc">Save your resumes and access your tools across sessions.</p>
+      <div class="form-group" id="nameGroup"><label>Full name</label><input id="authName" placeholder="Your name" /></div>
+      <div class="form-group"><label>Email</label><input id="authEmail" type="email" placeholder="you@example.com" /></div>
+      <div class="form-group"><label>Password</label><input id="authPassword" type="password" placeholder="••••••••" /></div>
+      <div class="form-actions"><button class="btn secondary" onclick="closeAuth()">Cancel</button><button class="btn" onclick="submitAuth()">Continue</button></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--muted);font-size:.82rem">
+        <span style="height:1px;background:rgba(255,255,255,.12);flex:1"></span><span>OR</span><span style="height:1px;background:rgba(255,255,255,.12);flex:1"></span>
+      </div>
+      <button id="googleAuthMain" type="button" class="btn secondary" style="width:100%">Continue with Google</button>
+      <div id="authMsg" class="notice"></div>
     </div>
-    <button id="googleAuthMain" type="button" class="btn secondary" style="width:100%">Continue with Google</button>
-    <div id="authMsg" class="notice"></div>
   </div>
-</div>
 
-<!-- ============================================================
-     SCRIPTS
-     ============================================================ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+  <!-- ============================================================
+  PDF & MAMMOTH LIBS
+  ============================================================ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js">
+  </script>
 
-<script>
-  // ============================================================
-  // 1. GLOBAL STATE
-  // ============================================================
-  const FREE_LIMIT = 3;
-  const PDFJS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
-  const ADMIN_EMAIL = "prathiv132004@gmail.com";
-  let mode = 'signup';
-  const $ = id => document.getElementById(id);
-  let currentUserData = null;
+  <!-- ============================================================
+  MAIN APPLICATION SCRIPT
+  ============================================================ -->
+  <script>
+    // ============================================================
+    // 1. FIREBASE INIT (using compat SDK – already loaded)
+    // ============================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyDG3gzlvISNGySTCrzd3zuZyemrJSatp34",
+      authDomain: "resumeai-3c29d.firebaseapp.com",
+      projectId: "resumeai-3c29d",
+      storageBucket: "resumeai-3c29d.firebasestorage.app",
+      messagingSenderId: "746400832087",
+      appId: "1:746400832087:web:7baca2f3cb4792a0a92112",
+      measurementId: "G-PPN02969DJ"
+    };
 
-  // ============================================================
-  // 2. TOAST
-  // ============================================================
-  let toastTimer = null;
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-  function showAuthSuccessToast(user) {
-    const toast = document.getElementById('resumoraAuthToast');
-    const nameEl = document.getElementById('toastUserName');
-    if (!toast) return;
-    const name = user && user.displayName ? user.displayName.split(' ')[0] : 'User';
-    if (nameEl) nameEl.textContent = name;
-    toast.style.display = 'flex';
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      toast.style.display = 'none';
-    }, 4000);
-  }
+    // Set persistence
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-  function checkExistingUserAndShowToast() {
-    const user = window.resumoraCurrentUser;
-    if (user) {
-      showAuthSuccessToast(user);
+    // Expose Firebase objects globally
+    window.__auth = auth;
+    window.__db = db;
+    window.__firebaseReady = true;
+
+    // ============================================================
+    // 2. GLOBAL STATE
+    // ============================================================
+    const FREE_LIMIT = 3;
+    const ADMIN_EMAIL = "prathiv132004@gmail.com";
+    let currentUser = null;
+    let currentUserData = null;
+    let toastTimer = null;
+
+    const $ = id => document.getElementById(id);
+
+    // ============================================================
+    // 3. TOAST
+    // ============================================================
+    function showAuthSuccessToast(user) {
+      const toast = document.getElementById('resumoraAuthToast');
+      const nameEl = document.getElementById('toastUserName');
+      if (!toast) return;
+      const name = user && user.displayName ? user.displayName.split(' ')[0] : 'User';
+      if (nameEl) nameEl.textContent = name;
+      toast.style.display = 'flex';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.style.display = 'none';
+      }, 4000);
     }
-  }
 
-  // ============================================================
-  // 3. AUTH & USER DATA
-  // ============================================================
-  function handleCta() {
-    if (window.resumoraCurrentUser) {
-      document.getElementById('resumeTool').scrollIntoView({ behavior: 'smooth' });
-    } else {
-      openAuth('signup');
+    function showToastMessage(msg, isSuccess = true) {
+      const toast = document.getElementById('resumoraAuthToast');
+      const textEl = document.getElementById('resumoraAuthToastText');
+      if (!toast) return;
+      textEl.innerHTML = msg;
+      toast.style.display = 'flex';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.style.display = 'none';
+      }, 4000);
     }
-  }
 
-  async function fetchUserData(uid) {
-    try {
-      const authApi = await window.resumoraFirebaseReady;
-      const doc = await authApi.getDoc(authApi.doc(authApi.db, 'users', uid));
-      const user = window.resumoraCurrentUser;
-      // Check if this is the admin
-      const isAdmin = user && user.email === ADMIN_EMAIL;
-
-      if (doc.exists) {
-        const data = doc.data();
-        // If admin, ensure plan is 'pro'
-        if (isAdmin && data.plan !== 'pro') {
-          await authApi.updateDoc(authApi.doc(authApi.db, 'users', uid), { plan: 'pro' });
-          data.plan = 'pro';
-        }
-        return data;
+    // ============================================================
+    // 4. AUTH & USER DATA
+    // ============================================================
+    function handleCta() {
+      if (currentUser) {
+        document.getElementById('resumeTool').scrollIntoView({ behavior: 'smooth' });
       } else {
-        // New user – create document
-        const newData = {
-          email: user.email,
-          displayName: user.displayName || 'User',
-          plan: isAdmin ? 'pro' : 'free',
-          scansUsed: 0,
-          createdAt: authApi.serverTimestamp()
-        };
-        await authApi.setDoc(authApi.doc(authApi.db, 'users', uid), newData);
-        return newData;
+        openAuth('signup');
       }
-    } catch (e) {
-      console.error('Error fetching user data:', e);
-      return { plan: 'free', scansUsed: 0 };
-    }
-  }
-
-  function updateDashboard(user, data) {
-    const dashboard = document.getElementById('dashboard');
-    dashboard.classList.add('show');
-    document.getElementById('accountName').textContent = 'Welcome, ' + (user.displayName || 'User');
-    document.getElementById('accountEmail').textContent = user.email;
-    const badge = document.getElementById('planBadge');
-    badge.style.display = (data && data.plan === 'pro') ? 'inline-block' : 'none';
-  }
-
-  function updateScanInfo() {
-    const info = document.getElementById('scanInfo');
-    if (!currentUserData) return;
-    if (currentUserData.plan === 'pro') {
-      info.textContent = '✅ Pro — unlimited scans';
-    } else {
-      const used = currentUserData.scansUsed || 0;
-      const remaining = Math.max(0, FREE_LIMIT - used);
-      info.textContent = `🔍 Free — ${remaining} scan${remaining !== 1 ? 's' : ''} remaining (lifetime)`;
-    }
-  }
-
-  function updateAiRewriteVisibility(data) {
-    const section = document.getElementById('aiRewriteSection');
-    section.style.display = (data && data.plan === 'pro') ? 'block' : 'none';
-  }
-
-  async function refreshUserData() {
-    if (window.resumoraCurrentUser) {
-      const data = await fetchUserData(window.resumoraCurrentUser.uid);
-      currentUserData = data;
-      updateDashboard(window.resumoraCurrentUser, data);
-      updateScanInfo();
-      updateAiRewriteVisibility(data);
-    }
-  }
-
-  function updateUIForAuth(user) {
-    const tool = document.getElementById('resumeTool');
-    if (user) {
-      tool.style.display = 'block';
-      refreshUserData();
-    } else {
-      tool.style.display = 'none';
-      currentUserData = null;
-      document.getElementById('dashboard').classList.remove('show');
-    }
-  }
-
-  // ============================================================
-  // 4. AUTO-UPGRADE FROM PAYMENT (admin already handled)
-  // ============================================================
-  async function checkPaymentAndUpgrade() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const paymentId = urlParams.get('razorpay_payment_id');
-    const orderId = urlParams.get('razorpay_order_id');
-
-    // Skip if admin (already Pro)
-    if (window.resumoraCurrentUser && window.resumoraCurrentUser.email === ADMIN_EMAIL) {
-      return;
     }
 
-    if (paymentId && orderId && window.resumoraCurrentUser) {
+    async function fetchUserData(uid) {
       try {
-        const authApi = await window.resumoraFirebaseReady;
-        const uid = window.resumoraCurrentUser.uid;
-        const userRef = authApi.doc(authApi.db, 'users', uid);
-        await authApi.updateDoc(userRef, { plan: 'pro' });
-        await refreshUserData();
-        alert('🎉 Payment successful! You are now a Pro user. Enjoy unlimited scans and AI rewrite!');
-        window.history.replaceState({}, document.title, window.location.pathname);
+        const doc = await db.collection('users').doc(uid).get();
+        const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+
+        if (doc.exists) {
+          const data = doc.data();
+          // If admin, ensure plan is 'pro'
+          if (isAdmin && data.plan !== 'pro') {
+            await db.collection('users').doc(uid).update({ plan: 'pro' });
+            data.plan = 'pro';
+          }
+          return data;
+        } else {
+          // New user
+          const newData = {
+            email: currentUser.email,
+            displayName: currentUser.displayName || 'User',
+            plan: isAdmin ? 'pro' : 'free',
+            scansUsed: 0,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          await db.collection('users').doc(uid).set(newData);
+          return newData;
+        }
       } catch (e) {
-        console.error('Upgrade failed:', e);
-        alert('Payment detected but could not upgrade. Please contact support.');
+        console.error('Error fetching user data:', e);
+        return { plan: 'free', scansUsed: 0 };
       }
     }
-  }
 
-  // ============================================================
-  // 5. ANALYZE RESUME
-  // ============================================================
-  async function analyzeResume() {
-    const resume = document.getElementById('resumeInput').value.trim();
-    const jd = document.getElementById('jdInput').value.trim();
-    if (!resume) {
-      alert('Please upload a readable PDF/DOC/DOCX file or paste your resume text.');
-      return;
+    function updateDashboard(user, data) {
+      const dashboard = document.getElementById('dashboard');
+      dashboard.classList.add('show');
+      document.getElementById('accountName').textContent = 'Welcome, ' + (user.displayName || 'User');
+      document.getElementById('accountEmail').textContent = user.email;
+      const badge = document.getElementById('planBadge');
+      badge.style.display = (data && data.plan === 'pro') ? 'inline-block' : 'none';
     }
-    if (!window.resumoraCurrentUser || !currentUserData) {
-      alert('Please log in first.');
-      return;
+
+    function updateScanInfo() {
+      const info = document.getElementById('scanInfo');
+      if (!currentUserData) return;
+      if (currentUserData.plan === 'pro') {
+        info.textContent = '✅ Pro — unlimited scans';
+      } else {
+        const used = currentUserData.scansUsed || 0;
+        const remaining = Math.max(0, FREE_LIMIT - used);
+        info.textContent = `🔍 Free — ${remaining} scan${remaining !== 1 ? 's' : ''} remaining (lifetime)`;
+      }
     }
-    if (currentUserData.plan !== 'pro') {
-      const used = currentUserData.scansUsed || 0;
-      if (used >= FREE_LIMIT) {
-        alert('You have used all 3 free scans. Please upgrade to Pro for unlimited scans.');
+
+    function updateAiRewriteVisibility(data) {
+      const section = document.getElementById('aiRewriteSection');
+      section.style.display = (data && data.plan === 'pro') ? 'block' : 'none';
+    }
+
+    async function refreshUserData() {
+      if (currentUser) {
+        const data = await fetchUserData(currentUser.uid);
+        currentUserData = data;
+        updateDashboard(currentUser, data);
+        updateScanInfo();
+        updateAiRewriteVisibility(data);
+      }
+    }
+
+    function updateUIForAuth(user) {
+      const tool = document.getElementById('resumeTool');
+      if (user) {
+        currentUser = user;
+        tool.style.display = 'block';
+        refreshUserData();
+        // Show toast
+        showAuthSuccessToast(user);
+        // Update nav buttons
+        document.getElementById('navLoginBtn').textContent = user.displayName || 'Account';
+        document.getElementById('navSignupBtn').style.display = 'none';
+        // Show admin button if admin
+        if (user.email === ADMIN_EMAIL) {
+          document.getElementById('resumoraAdminBtn').style.display = 'inline-block';
+        }
+      } else {
+        currentUser = null;
+        currentUserData = null;
+        tool.style.display = 'none';
+        document.getElementById('dashboard').classList.remove('show');
+        document.getElementById('navLoginBtn').textContent = 'Log in';
+        document.getElementById('navSignupBtn').style.display = 'inline-block';
+        document.getElementById('resumoraAdminBtn').style.display = 'none';
+      }
+    }
+
+    // ============================================================
+    // 5. AUTO-UPGRADE FROM PAYMENT
+    // ============================================================
+    async function checkPaymentAndUpgrade() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentId = urlParams.get('razorpay_payment_id');
+      const orderId = urlParams.get('razorpay_order_id');
+
+      if (currentUser && currentUser.email === ADMIN_EMAIL) {
+        return; // Admin is already Pro
+      }
+
+      if (paymentId && orderId && currentUser) {
+        try {
+          const userRef = db.collection('users').doc(currentUser.uid);
+          await userRef.update({ plan: 'pro' });
+          await refreshUserData();
+          showToastMessage('🎉 Payment successful! You are now <strong>Pro</strong>!', true);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (e) {
+          console.error('Upgrade failed:', e);
+          showToastMessage('⚠️ Payment detected but upgrade failed. Contact support.', false);
+        }
+      }
+    }
+
+    // ============================================================
+    // 6. ANALYZE RESUME
+    // ============================================================
+    async function analyzeResume() {
+      const resume = document.getElementById('resumeInput').value.trim();
+      const jd = document.getElementById('jdInput').value.trim();
+      if (!resume) {
+        alert('Please upload a readable PDF/DOC/DOCX file or paste your resume text.');
         return;
       }
-    }
-
-    const r = words(resume), j = words(jd);
-    const stop = new Set(['the','and','for','with','from','that','this','are','you','your','our','have','has','will','job','work','role','years','using','into','their','they','about','not','can','all','who','but','was','were','been','than','also','any','how','what']);
-    const keywords = (j.length ? j : r).filter(x => !stop.has(x) && x.length > 3);
-    const matched = keywords.filter(x => r.includes(x)).slice(0, 12);
-    const missing = [...new Set(keywords.filter(x => !r.includes(x)))].slice(0, 12);
-    const base = j.length ? Math.round((matched.length / Math.max(1, Math.min(12, keywords.length))) * 100) : Math.min(92, 55 + Math.min(35, Math.floor(r.length / 20)));
-    const score = Math.max(20, Math.min(98, base));
-    const tier = score >= 80 ? 'Excellent' : score >= 60 ? 'Good' : score >= 40 ? 'Fair' : 'Needs work';
-
-    document.getElementById('score').textContent = score;
-    document.getElementById('tier').textContent = tier + ' ATS Score';
-    document.getElementById('summary').textContent = j.length ? 'Comparison with job description.' : 'General scan. Add a job description for targeted matching.';
-    renderChips('matched', matched);
-    renderChips('missing', missing, true);
-    renderList('strengths', [
-      r.length > 80 ? 'Good amount of resume content' : 'Add more measurable achievements',
-      matched.length > 4 ? 'Strong job-description keyword overlap' : 'Increase role-specific keywords',
-      r.some(x => ['experience','education','skills'].includes(x)) ? 'Core resume sections detected' : 'Add clear standard section headings'
-    ]);
-    renderList('fixes', missing.slice(0, 5).map(x => 'Consider adding relevant keyword: ' + x));
-    document.getElementById('results').style.display = 'block';
-    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    if (currentUserData.plan !== 'pro') {
-      try {
-        const authApi = await window.resumoraFirebaseReady;
-        const userRef = authApi.doc(authApi.db, 'users', window.resumoraCurrentUser.uid);
-        await authApi.updateDoc(userRef, { scansUsed: (currentUserData.scansUsed || 0) + 1 });
-        currentUserData.scansUsed = (currentUserData.scansUsed || 0) + 1;
-        updateScanInfo();
-      } catch (e) {
-        console.error('Failed to update scan count:', e);
+      if (!currentUser || !currentUserData) {
+        alert('Please log in first.');
+        return;
       }
-    }
-  }
-
-  function words(text) { return [...new Set((text.toLowerCase().match(/[a-z][a-z+#.-]{2,}/g) || []))]; }
-  function renderChips(id, arr, missing = false) {
-    const el = document.getElementById(id);
-    el.innerHTML = arr.length ? arr.map(x => `<span class="chip ${missing?'missing':''}">${escapeHtml(x)}</span>`).join('') : '<span class="muted">None detected</span>';
-  }
-  function renderList(id, arr) {
-    document.getElementById(id).innerHTML = arr.map(x => `<div class="item">• ${escapeHtml(x)}</div>`).join('');
-  }
-  function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-  }
-
-  // ============================================================
-  // 6. AUTH DIALOG & LOGOUT
-  // ============================================================
-  function openAuth(m) {
-    mode = m;
-    document.getElementById('authModal').classList.add('show');
-    document.getElementById('nameGroup').style.display = m === 'signup' ? 'block' : 'none';
-    document.getElementById('authTitle').textContent = m === 'signup' ? 'Create your Resumora account' : 'Welcome back';
-    document.getElementById('authDesc').textContent = m === 'signup' ? 'Save your resumes and access your tools across sessions.' : 'Log in to access your Resumora account.';
-    document.getElementById('authMsg').textContent = '';
-  }
-  function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
-  function submitAuth() {
-    const email = document.getElementById('authEmail').value.trim();
-    const pass = document.getElementById('authPassword').value;
-    if (!email || !pass) {
-      document.getElementById('authMsg').textContent = 'Please enter your email and password.';
-      return;
-    }
-    alert('Please use "Continue with Google" for authentication.');
-  }
-  function logout() {
-    if (window.resumoraAuth) {
-      window.resumoraAuth.signOut(window.resumoraAuth.auth);
-    }
-    document.getElementById('dashboard').classList.remove('show');
-    document.getElementById('resumeTool').style.display = 'none';
-    currentUserData = null;
-  }
-
-  // ============================================================
-  // 7. FILE UPLOAD
-  // ============================================================
-  async function extractResumeFile(file) {
-    if (!file) return;
-    const name = file.name.toLowerCase();
-    const allowed = /\.(pdf|doc|docx)$/i.test(name);
-    if (!allowed) { alert('Please choose a PDF, DOC or DOCX file.'); return; }
-    document.getElementById('fileName').textContent = 'Reading: ' + file.name + '…';
-    try {
-      let text = '';
-      if (name.endsWith('.pdf')) {
-        const pdfjs = await import(PDFJS_CDN);
-        pdfjs.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
-        const data = await file.arrayBuffer();
-        const pdf = await pdfjs.getDocument({ data }).promise;
-        const pages = [];
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-          pages.push(content.items.map(item => item.str || '').join(' '));
+      if (currentUserData.plan !== 'pro') {
+        const used = currentUserData.scansUsed || 0;
+        if (used >= FREE_LIMIT) {
+          alert('You have used all 3 free scans. Please upgrade to Pro for unlimited scans.');
+          return;
         }
-        text = pages.join('\n\n');
-      } else if (window.mammoth) {
-        const data = await file.arrayBuffer();
-        const result = await mammoth.extractRawText({ arrayBuffer: data });
-        text = result.value || '';
-      } else {
-        throw new Error('DOC/DOCX reader could not be loaded.');
       }
-      text = text.replace(/\r/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
-      if (!text || text.length < 20) throw new Error('No readable text was found. If the PDF is scanned/image-only, OCR is required.');
-      document.getElementById('resumeInput').value = text;
-      document.getElementById('fileName').textContent = '✓ ' + file.name + ' — text extracted';
-    } catch (err) {
-      document.getElementById('fileName').textContent = 'Could not read ' + file.name;
-      alert('Could not extract text from this file. ' + (err.message || 'Please try another PDF/DOC/DOCX.'));
-    }
-  }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('fileInput').addEventListener('change', e => extractResumeFile(e.target.files[0]));
-    const dropZone = document.getElementById('dropZone');
-    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'rgba(91,140,255,.8)'; });
-    dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'rgba(91,140,255,.35)'; });
-    dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.style.borderColor = 'rgba(91,140,255,.35)'; const f = e.dataTransfer.files[0]; if (f) extractResumeFile(f); });
-  });
+      const r = words(resume),
+        j = words(jd);
+      const stop = new Set(['the', 'and', 'for', 'with', 'from', 'that', 'this', 'are', 'you', 'your', 'our', 'have', 'has',
+        'will', 'job', 'work', 'role', 'years', 'using', 'into', 'their', 'they', 'about', 'not', 'can', 'all', 'who',
+        'but', 'was', 'were', 'been', 'than', 'also', 'any', 'how', 'what'
+      ]);
+      const keywords = (j.length ? j : r).filter(x => !stop.has(x) && x.length > 3);
+      const matched = keywords.filter(x => r.includes(x)).slice(0, 12);
+      const missing = [...new Set(keywords.filter(x => !r.includes(x)))].slice(0, 12);
+      const base = j.length ? Math.round((matched.length / Math.max(1, Math.min(12, keywords.length))) * 100) : Math.min(
+        92, 55 + Math.min(35, Math.floor(r.length / 20)));
+      const score = Math.max(20, Math.min(98, base));
+      const tier = score >= 80 ? 'Excellent' : score >= 60 ? 'Good' : score >= 40 ? 'Fair' : 'Needs work';
 
-  // ============================================================
-  // 8. ADMIN PANEL
-  // ============================================================
-  async function loadAdminUsers() {
-    const list = document.getElementById('adminUsersList');
-    if (!list) return;
-    try {
-      const authApi = await window.resumoraFirebaseReady;
-      const snap = await authApi.getDocs(authApi.collection(authApi.db, 'users'));
-      let total = 0, pro = 0;
-      let html = '<table style="width:100%;border-collapse:collapse;font-size:.85rem;">';
-      html += '<tr style="border-bottom:1px solid var(--border);"><th style="text-align:left;padding:6px;">Email</th><th style="text-align:left;padding:6px;">Plan</th><th style="text-align:left;padding:6px;">Scans</th><th style="text-align:left;padding:6px;">Actions</th></tr>';
-      snap.forEach(doc => {
-        const data = doc.data();
-        total++;
-        if (data.plan === 'pro') pro++;
-        html += `<tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:6px;">${escapeHtml(data.email || '')}</td>
-          <td style="padding:6px;">${data.plan === 'pro' ? '⭐ Pro' : 'Free'}</td>
-          <td style="padding:6px;">${data.scansUsed || 0}</td>
-          <td style="padding:6px;">
-            <button class="btn secondary" style="padding:4px 8px;font-size:.7rem;" onclick="adminUpgrade('${doc.id}')">Upgrade to Pro</button>
-            <button class="btn secondary" style="padding:4px 8px;font-size:.7rem;background:rgba(255,100,124,.2);border-color:var(--red);" onclick="adminResetScans('${doc.id}')">Reset scans</button>
-          </td>
-        </tr>`;
-      });
-      html += '</table>';
-      list.innerHTML = html;
-      document.getElementById('adminUsers').textContent = total;
-      document.getElementById('adminProUsers').textContent = pro;
-    } catch (e) {
-      console.error('Admin load users error:', e);
-      list.innerHTML = '<div class="notice">Could not load users. Check Firestore rules.</div>';
-    }
-  }
+      document.getElementById('score').textContent = score;
+      document.getElementById('tier').textContent = tier + ' ATS Score';
+      document.getElementById('summary').textContent = j.length ? 'Comparison with job description.' :
+        'General scan. Add a job description for targeted matching.';
+      renderChips('matched', matched);
+      renderChips('missing', missing, true);
+      renderList('strengths', [
+        r.length > 80 ? 'Good amount of resume content' : 'Add more measurable achievements',
+        matched.length > 4 ? 'Strong job-description keyword overlap' : 'Increase role-specific keywords',
+        r.some(x => ['experience', 'education', 'skills'].includes(x)) ? 'Core resume sections detected' :
+        'Add clear standard section headings'
+      ]);
+      renderList('fixes', missing.slice(0, 5).map(x => 'Consider adding relevant keyword: ' + x));
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  window.adminUpgrade = async function(uid) {
-    if (!confirm('Upgrade this user to Pro?')) return;
-    try {
-      const authApi = await window.resumoraFirebaseReady;
-      await authApi.updateDoc(authApi.doc(authApi.db, 'users', uid), { plan: 'pro' });
-      alert('User upgraded to Pro.');
-      loadAdminUsers();
-    } catch (e) { alert('Error: ' + e.message); }
-  };
-
-  window.adminResetScans = async function(uid) {
-    if (!confirm('Reset scan count for this user?')) return;
-    try {
-      const authApi = await window.resumoraFirebaseReady;
-      await authApi.updateDoc(authApi.doc(authApi.db, 'users', uid), { scansUsed: 0 });
-      alert('Scans reset.');
-      loadAdminUsers();
-    } catch (e) { alert('Error: ' + e.message); }
-  };
-
-  // ============================================================
-  // 9. EVENT BINDINGS & AUTH LISTENERS
-  // ============================================================
-  document.addEventListener('resumora-auth-changed', async (e) => {
-    const user = e.detail;
-    if (user) {
-      showAuthSuccessToast(user);
-      updateUIForAuth(user);
-      await checkPaymentAndUpgrade();
-      if (document.getElementById('resumoraAdminPanel').style.display === 'flex') {
-        loadAdminUsers();
+      if (currentUserData.plan !== 'pro') {
+        try {
+          const userRef = db.collection('users').doc(currentUser.uid);
+          await userRef.update({ scansUsed: (currentUserData.scansUsed || 0) + 1 });
+          currentUserData.scansUsed = (currentUserData.scansUsed || 0) + 1;
+          updateScanInfo();
+        } catch (e) {
+          console.error('Failed to update scan count:', e);
+        }
       }
-    } else {
-      document.getElementById('resumeTool').style.display = 'none';
+    }
+
+    function words(text) { return [...new Set((text.toLowerCase().match(/[a-z][a-z+#.-]{2,}/g) || []))]; }
+
+    function renderChips(id, arr, missing = false) {
+      const el = document.getElementById(id);
+      el.innerHTML = arr.length ? arr.map(x => `<span class="chip ${missing?'missing':''}">${escapeHtml(x)}</span>`).join(
+        '') : '<span class="muted">None detected</span>';
+    }
+
+    function renderList(id, arr) {
+      document.getElementById(id).innerHTML = arr.map(x => `<div class="item">• ${escapeHtml(x)}</div>`).join('');
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' } [m]));
+    }
+
+    // ============================================================
+    // 7. AUTH DIALOG & LOGOUT
+    // ============================================================
+    function openAuth(m) {
+      document.getElementById('authModal').classList.add('show');
+      document.getElementById('nameGroup').style.display = m === 'signup' ? 'block' : 'none';
+      document.getElementById('authTitle').textContent = m === 'signup' ? 'Create your Resumora account' : 'Welcome back';
+      document.getElementById('authDesc').textContent = m === 'signup' ?
+        'Save your resumes and access your tools across sessions.' :
+        'Log in to access your Resumora account.';
+      document.getElementById('authMsg').textContent = '';
+    }
+
+    function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
+
+    function submitAuth() {
+      const email = document.getElementById('authEmail').value.trim();
+      const pass = document.getElementById('authPassword').value;
+      if (!email || !pass) {
+        document.getElementById('authMsg').textContent = 'Please enter your email and password.';
+        return;
+      }
+      // Use Firebase email/password sign-in
+      auth.signInWithEmailAndPassword(email, pass)
+        .then(() => {
+          closeAuth();
+        })
+        .catch(err => {
+          document.getElementById('authMsg').textContent = err.message;
+        });
+    }
+
+    function logout() {
+      auth.signOut();
       document.getElementById('dashboard').classList.remove('show');
+      document.getElementById('resumeTool').style.display = 'none';
+      currentUser = null;
       currentUserData = null;
     }
-  });
 
-  // Admin panel controls
-  document.getElementById('resumoraAdminBtn').addEventListener('click', async () => {
-    const user = window.resumoraCurrentUser;
-    if (!user || user.email !== ADMIN_EMAIL) {
-      alert('Admin access denied.');
-      return;
+    // ============================================================
+    // 8. GOOGLE SIGN-IN (with fallback)
+    // ============================================================
+    async function signInGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+
+      try {
+        const result = await auth.signInWithPopup(provider);
+        // Success – auth state listener will handle UI update
+        closeAuth();
+      } catch (error) {
+        // If popup is blocked, fall back to redirect
+        if (error.code === 'auth/popup-blocked') {
+          console.log('Popup blocked, using redirect fallback...');
+          await auth.signInWithRedirect(provider);
+        } else {
+          console.error('Google sign-in error:', error);
+          document.getElementById('authMsg').textContent = 'Error: ' + error.message;
+          alert('Google sign-in failed: ' + error.message + '\n\nMake sure your domain is added to Firebase Authorized Domains.');
+        }
+      }
     }
-    document.getElementById('resumoraAdminPanel').style.display = 'flex';
-    document.getElementById('resumoraAdminIdentity').textContent = 'Signed in as ' + user.email + ' (auto-Pro)';
-    await loadAdminUsers();
-  });
-  document.getElementById('resumoraAdminClose').addEventListener('click', () => {
-    document.getElementById('resumoraAdminPanel').style.display = 'none';
-  });
-  document.getElementById('adminRefresh').addEventListener('click', loadAdminUsers);
-  document.getElementById('adminSignOut').addEventListener('click', () => {
-    if (window.resumoraAuth) {
-      window.resumoraAuth.signOut(window.resumoraAuth.auth);
+
+    // Handle redirect result (for fallback)
+    async function handleRedirectResult() {
+      try {
+        const result = await auth.getRedirectResult();
+        if (result.user) {
+          // Success – auth state listener will handle UI update
+          closeAuth();
+        }
+      } catch (error) {
+        console.error('Redirect sign-in error:', error);
+      }
     }
-    document.getElementById('resumoraAdminPanel').style.display = 'none';
-  });
 
-  // Check for existing user on page load (toast on refresh)
-  window.addEventListener('load', () => {
-    setTimeout(checkExistingUserAndShowToast, 500);
-    if (window.resumoraCurrentUser) {
-      checkPaymentAndUpgrade();
+    // ============================================================
+    // 9. FILE UPLOAD
+    // ============================================================
+    async function extractResumeFile(file) {
+      if (!file) return;
+      const name = file.name.toLowerCase();
+      const allowed = /\.(pdf|doc|docx)$/i.test(name);
+      if (!allowed) { alert('Please choose a PDF, DOC or DOCX file.'); return; }
+      document.getElementById('fileName').textContent = 'Reading: ' + file.name + '…';
+      try {
+        let text = '';
+        if (name.endsWith('.pdf')) {
+          const pdfjs = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs');
+          pdfjs.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+          const data = await file.arrayBuffer();
+          const pdf = await pdfjs.getDocument({ data }).promise;
+          const pages = [];
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            pages.push(content.items.map(item => item.str || '').join(' '));
+          }
+          text = pages.join('\n\n');
+        } else if (window.mammoth) {
+          const data = await file.arrayBuffer();
+          const result = await mammoth.extractRawText({ arrayBuffer: data });
+          text = result.value || '';
+        } else {
+          throw new Error('DOC/DOCX reader could not be loaded.');
+        }
+        text = text.replace(/\r/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+        if (!text || text.length < 20) throw new Error(
+          'No readable text was found. If the PDF is scanned/image-only, OCR is required.');
+        document.getElementById('resumeInput').value = text;
+        document.getElementById('fileName').textContent = '✓ ' + file.name + ' — text extracted';
+      } catch (err) {
+        document.getElementById('fileName').textContent = 'Could not read ' + file.name;
+        alert('Could not extract text from this file. ' + (err.message || 'Please try another PDF/DOC/DOCX.'));
+      }
     }
-  });
-</script>
 
-<!-- ============================================================
-     FIREBASE MODULE
-     ============================================================ -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import {
-    getAuth, GoogleAuthProvider, signInWithPopup, signOut,
-    onAuthStateChanged, setPersistence, browserLocalPersistence
-  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-  import {
-    getFirestore, collection, doc, getDoc, setDoc, updateDoc, getDocs, query, orderBy, addDoc, serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDG3gzlvISNGySTCrzd3zuZyemrJSatp34",
-    authDomain: "resumeai-3c29d.firebaseapp.com",
-    projectId: "resumeai-3c29d",
-    storageBucket: "resumeai-3c29d.firebasestorage.app",
-    messagingSenderId: "746400832087",
-    appId: "1:746400832087:web:7baca2f3cb4792a0a92112",
-    measurementId: "G-PPN02969DJ"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: "select_account" });
-
-  await setPersistence(auth, browserLocalPersistence);
-
-  window.resumoraAuth = {
-    auth, db, provider, signInWithPopup, signOut,
-    doc, getDoc, setDoc, updateDoc, getDocs, collection, query, orderBy, addDoc, serverTimestamp
-  };
-
-  onAuthStateChanged(auth, user => {
-    window.resumoraCurrentUser = user || null;
-    document.dispatchEvent(new CustomEvent("resumora-auth-changed", { detail: user || null }));
-  });
-
-  window.signInGoogle = async function() {
-    try {
-      const authApi = await window.resumoraFirebaseReady;
-      await authApi.signInWithPopup(authApi.auth, authApi.provider);
-    } catch (e) {
-      alert('Google sign-in failed: ' + e.message);
+    // ============================================================
+    // 10. ADMIN PANEL
+    // ============================================================
+    async function loadAdminUsers() {
+      const list = document.getElementById('adminUsersList');
+      if (!list) return;
+      try {
+        const snap = await db.collection('users').get();
+        let total = 0,
+          pro = 0;
+        let html = '<table style="width:100%;border-collapse:collapse;font-size:.85rem;">';
+        html +=
+          '<tr style="border-bottom:1px solid var(--border);"><th style="text-align:left;padding:6px;">Email</th><th style="text-align:left;padding:6px;">Plan</th><th style="text-align:left;padding:6px;">Scans</th><th style="text-align:left;padding:6px;">Actions</th></tr>';
+        snap.forEach(doc => {
+          const data = doc.data();
+          total++;
+          if (data.plan === 'pro') pro++;
+          const isAdmin = data.email === ADMIN_EMAIL;
+          html += `<tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:6px;">${escapeHtml(data.email || '')} ${isAdmin ? '👑' : ''}</td>
+            <td style="padding:6px;">${data.plan === 'pro' ? '⭐ Pro' : 'Free'}</td>
+            <td style="padding:6px;">${data.scansUsed || 0}</td>
+            <td style="padding:6px;">
+              ${!isAdmin ? `<button class="btn secondary" style="padding:4px 8px;font-size:.7rem;" onclick="adminUpgrade('${doc.id}')">Upgrade to Pro</button>
+              <button class="btn secondary" style="padding:4px 8px;font-size:.7rem;background:rgba(255,100,124,.2);border-color:var(--red);" onclick="adminResetScans('${doc.id}')">Reset scans</button>` : '<span style="color:var(--muted);font-size:.7rem;">Admin</span>'}
+            </td>
+          </tr>`;
+        });
+        html += '</table>';
+        list.innerHTML = html;
+        document.getElementById('adminUsers').textContent = total;
+        document.getElementById('adminProUsers').textContent = pro;
+      } catch (e) {
+        console.error('Admin load users error:', e);
+        list.innerHTML = '<div class="notice">Could not load users. Check Firestore rules.</div>';
+      }
     }
-  };
 
-  window.resumoraFirebaseReady = Promise.resolve(window.resumoraAuth);
-</script>
+    window.adminUpgrade = async function(uid) {
+      if (!confirm('Upgrade this user to Pro?')) return;
+      try {
+        await db.collection('users').doc(uid).update({ plan: 'pro' });
+        alert('User upgraded to Pro.');
+        loadAdminUsers();
+      } catch (e) { alert('Error: ' + e.message); }
+    };
 
-<!-- ============================================================
-     REVIEWS & UI BUTTONS
-     ============================================================ -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('googleAuthMain').addEventListener('click', () => window.signInGoogle());
-    document.getElementById('googleReviewLogin').addEventListener('click', () => {
-      if (!window.resumoraCurrentUser) window.signInGoogle();
+    window.adminResetScans = async function(uid) {
+      if (!confirm('Reset scan count for this user?')) return;
+      try {
+        await db.collection('users').doc(uid).update({ scansUsed: 0 });
+        alert('Scans reset.');
+        loadAdminUsers();
+      } catch (e) { alert('Error: ' + e.message); }
+    };
+
+    // ============================================================
+    // 11. EVENT BINDINGS
+    // ============================================================
+    // Auth state listener
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        currentUser = user;
+        updateUIForAuth(user);
+        // Check for payment after login
+        await checkPaymentAndUpgrade();
+        // Load admin users if panel is open
+        if (document.getElementById('resumoraAdminPanel').style.display === 'flex') {
+          loadAdminUsers();
+        }
+      } else {
+        currentUser = null;
+        currentUserData = null;
+        document.getElementById('resumeTool').style.display = 'none';
+        document.getElementById('dashboard').classList.remove('show');
+        document.getElementById('navLoginBtn').textContent = 'Log in';
+        document.getElementById('navSignupBtn').style.display = 'inline-block';
+        document.getElementById('resumoraAdminBtn').style.display = 'none';
+        document.getElementById('resumoraAdminPanel').style.display = 'none';
+      }
     });
+
+    // Handle redirect result on page load (for popup fallback)
+    window.addEventListener('load', () => {
+      handleRedirectResult();
+      // Also check for existing user to show toast on refresh
+      if (auth.currentUser) {
+        setTimeout(() => {
+          showAuthSuccessToast(auth.currentUser);
+        }, 600);
+      }
+    });
+
+    // Admin panel controls
+    document.getElementById('resumoraAdminBtn').addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user || user.email !== ADMIN_EMAIL) {
+        alert('Admin access denied.');
+        return;
+      }
+      document.getElementById('resumoraAdminPanel').style.display = 'flex';
+      document.getElementById('resumoraAdminIdentity').textContent = 'Signed in as ' + user.email + ' (auto-Pro)';
+      await loadAdminUsers();
+    });
+    document.getElementById('resumoraAdminClose').addEventListener('click', () => {
+      document.getElementById('resumoraAdminPanel').style.display = 'none';
+    });
+    document.getElementById('adminRefresh').addEventListener('click', loadAdminUsers);
+    document.getElementById('adminSignOut').addEventListener('click', () => {
+      auth.signOut();
+      document.getElementById('resumoraAdminPanel').style.display = 'none';
+    });
+
+    // File upload handlers
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('fileInput').addEventListener('change', e => extractResumeFile(e.target.files[0]));
+      const dropZone = document.getElementById('dropZone');
+      dropZone.addEventListener('dragover', e => { e.preventDefault();
+        dropZone.style.borderColor = 'rgba(91,140,255,.8)'; });
+      dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'rgba(91,140,255,.35)'; });
+      dropZone.addEventListener('drop', e => { e.preventDefault();
+        dropZone.style.borderColor = 'rgba(91,140,255,.35)'; const f = e.dataTransfer.files[0]; if (f) extractResumeFile(
+          f); });
+    });
+
+    // Google sign-in buttons
+    document.getElementById('googleAuthMain').addEventListener('click', () => signInGoogle());
+    document.getElementById('googleReviewLogin').addEventListener('click', () => {
+      if (!auth.currentUser) signInGoogle();
+    });
+
+    // Submit review
     document.getElementById('submitReview').addEventListener('click', async () => {
       try {
-        const authApi = await window.resumoraFirebaseReady;
-        const user = window.resumoraCurrentUser;
-        if (!user) { window.signInGoogle(); return; }
+        const user = auth.currentUser;
+        if (!user) { signInGoogle(); return; }
         const text = document.getElementById('reviewText').value.trim();
         const rating = Number(document.getElementById('reviewRating').value);
         if (text.length < 5) return alert('Please write at least 5 characters.');
-        await authApi.addDoc(authApi.collection(authApi.db, 'reviews'), {
+        await db.collection('reviews').add({
           uid: user.uid,
           displayName: user.displayName || 'User',
           photoURL: user.photoURL || '',
           rating,
           text,
-          createdAt: authApi.serverTimestamp(),
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           approved: false
         });
         document.getElementById('reviewText').value = '';
@@ -1040,8 +1351,16 @@
         alert('Error: ' + e.message);
       }
     });
-  });
-</script>
+
+    // Check for payment on page load
+    window.addEventListener('load', () => {
+      if (auth.currentUser) {
+        setTimeout(() => checkPaymentAndUpgrade(), 1000);
+      }
+    });
+
+    console.log('🔥 Resumora initialized. Login with Google to start.');
+  </script>
 
 </body>
 </html>
