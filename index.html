@@ -141,6 +141,30 @@ a{color:#9eb7ff;text-decoration:none}
       <button class="btn secondary" onclick="logout()">Log out</button>
     </div>
   </div>
+
+<section id="reviewsSection" style="max-width:980px;margin:70px auto;padding:0 20px">
+  <div style="text-align:center;margin-bottom:28px">
+    <div class="eyebrow">COMMUNITY</div>
+    <h2 style="font-size:clamp(2rem,4vw,3rem);margin:8px 0">What users say</h2>
+    <p style="opacity:.7">Signed-in users can share their experience with Resumora.</p>
+  </div>
+  <div id="reviewAuthBox" style="padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:20px">
+    <button class="btn btn-primary" id="googleReviewLogin">Continue with Google</button>
+    <span id="reviewAuthStatus" style="margin-left:10px;opacity:.7"></span>
+  </div>
+  <div id="reviewForm" style="display:none;padding:20px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.03);margin-bottom:25px">
+    <label>Rating</label>
+    <select id="reviewRating" style="margin:8px 0 14px;padding:10px;border-radius:10px">
+      <option value="5">★★★★★ — Excellent</option><option value="4">★★★★☆ — Great</option>
+      <option value="3">★★★☆☆ — Good</option><option value="2">★★☆☆☆ — Needs improvement</option>
+      <option value="1">★☆☆☆☆ — Poor</option>
+    </select>
+    <label>Your review</label>
+    <textarea id="reviewText" maxlength="800" rows="4" placeholder="Tell us about your experience…" style="width:100%;margin:8px 0 14px;padding:12px;border-radius:10px"></textarea>
+    <button class="btn btn-primary" id="submitReview">Post review</button>
+  </div>
+  <div id="reviewsList"></div>
+</section>
 </main>
 
 <section class="section">
@@ -161,8 +185,8 @@ a{color:#9eb7ff;text-decoration:none}
   <p class="section-sub">Start free. Upgrade when you need more.</p>
   <div class="pricing-grid">
     <div class="card"><h3>Free</h3><div class="price">₹0</div><p class="muted">3 ATS scans/day<br>Basic keyword analysis<br>Basic improvement tips</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="openAuth('signup')">Start free</button></div>
-    <div class="card highlight"><h3>Pro</h3><div class="price">₹149 <small>/ month</small></div><p class="muted">Unlimited scans<br>AI rewriting<br>Cover letters<br>LinkedIn optimization<br>PDF/DOCX export</p><button class="btn" style="margin-top:18px;width:100%" onclick="startPayment('pro')">Upgrade to Pro</button></div>
-    <div class="card"><h3>One-time</h3><div class="price">₹299</div><p class="muted">Complete resume transformation<br>ATS optimization<br>Professional formatting<br>PDF + DOCX export</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="startPayment('transform')">Get transformation</button></div>
+    <div class="card highlight"><h3>Pro</h3><div class="price">₹149 <small>/ month</small></div><p class="muted">Unlimited scans<br>AI rewriting<br>Cover letters<br>LinkedIn optimization<br>PDF/DOCX export</p><button class="btn" style="margin-top:18px;width:100%" onclick="startPayment(\'pro\')">Upgrade to Pro</button></div>
+    <div class="card"><h3>One-time</h3><div class="price">₹299</div><p class="muted">Complete resume transformation<br>ATS optimization<br>Professional formatting<br>PDF + DOCX export</p><button class="btn secondary" style="margin-top:18px;width:100%" onclick="startPayment(\'transformation\')">Get transformation</button></div>
   </div>
   <p class="notice" style="text-align:center;margin-top:18px">Payments are handled by Razorpay-hosted Payment Links. No Razorpay secret is stored in this website.</p>
 </div>
@@ -309,6 +333,95 @@ function showPaymentMessage(message, success) {
   window.__paymentMessageTimer = setTimeout(() => el.remove(), 7000);
 }
 showAccount();
+</script>
+
+<!-- Resumora Auth / Reviews / Admin integration -->
+<script type="module">
+  /*
+    Firebase setup:
+    1. Create a Firebase project.
+    2. Enable Authentication → Google.
+    3. Create Firestore Database.
+    4. Replace the values in firebaseConfig below with your Firebase Web App config.
+    5. Set Firestore Security Rules so only authenticated users can create reviews,
+       users can only edit their own data, and admin privileges are enforced by rules.
+  */
+  const firebaseConfig = {
+    apiKey: "YOUR_FIREBASE_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.firebasestorage.app",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_FIREBASE_APP_ID"
+  };
+
+  if (firebaseConfig.apiKey !== "YOUR_FIREBASE_API_KEY") {
+    try {
+      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
+      const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } =
+        await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
+      const { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot, doc, setDoc } =
+        await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const provider = new GoogleAuthProvider();
+
+      window.resumoraAuth = { auth, db, provider, signInWithPopup, signOut, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot, doc, setDoc };
+
+      onAuthStateChanged(auth, user => {
+        window.resumoraCurrentUser = user || null;
+        document.dispatchEvent(new CustomEvent("resumora-auth-changed", { detail: user || null }));
+      });
+    } catch (e) {
+      console.error("Firebase initialization failed:", e);
+    }
+  }
+</script>
+
+<script>
+document.addEventListener("resumora-auth-changed", e => {
+  const user = e.detail;
+  const status = document.getElementById("reviewAuthStatus");
+  const form = document.getElementById("reviewForm");
+  const login = document.getElementById("googleReviewLogin");
+  if (!status) return;
+  if (user) {
+    status.textContent = `Signed in as ${user.displayName || user.email}`;
+    if (form) form.style.display = "block";
+    if (login) { login.textContent = "Sign in with another Google account"; }
+  } else {
+    status.textContent = "Sign in to leave a review.";
+    if (form) form.style.display = "none";
+  }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const login = document.getElementById("googleReviewLogin");
+  const submit = document.getElementById("submitReview");
+  if (login) login.onclick = async () => {
+    const a = window.resumoraAuth;
+    if (!a) return alert("Google Sign-In is not configured yet. Add your Firebase Web App configuration to index.html.");
+    try { await a.signInWithPopup(a.auth, a.provider); }
+    catch (e) { alert(e.message || "Google Sign-In failed."); }
+  };
+  if (submit) submit.onclick = async () => {
+    const a = window.resumoraAuth, user = window.resumoraCurrentUser;
+    if (!a || !user) return alert("Please sign in with Google first.");
+    const text = document.getElementById("reviewText").value.trim();
+    const rating = Number(document.getElementById("reviewRating").value);
+    if (text.length < 5) return alert("Please write a little more about your experience.");
+    try {
+      await a.addDoc(a.collection(a.db, "reviews"), {
+        uid:user.uid, displayName:user.displayName || "Resumora User",
+        photoURL:user.photoURL || "", rating, text,
+        createdAt:a.serverTimestamp(), approved:false
+      });
+      document.getElementById("reviewText").value = "";
+      alert("Thanks! Your review was submitted for moderation.");
+    } catch(e) { alert(e.message || "Could not submit review."); }
+  };
+});
 </script>
 </body>
 </html>
