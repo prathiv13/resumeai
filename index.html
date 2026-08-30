@@ -19,7 +19,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
-    /* ===== all existing styles – kept unchanged ===== */
     :root {
       --bg: #080b14;
       --surface: #0f1422;
@@ -670,8 +669,8 @@
     let currentUserData = null;
     let toastTimer = null;
     let rewrittenText = '';
-    let selectedTemplate = 'modern'; // default
-    let analysisData = null; // store latest analysis for suggestions
+    let selectedTemplate = 'modern';
+    let analysisData = null;
 
     const $ = id => document.getElementById(id);
 
@@ -881,7 +880,6 @@
       document.getElementById('results').style.display = 'block';
       document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      // Store analysis for suggestions
       analysisData = { r, j, matched, missing, score, tier, hasJD: !!j };
       generateSuggestions(analysisData);
 
@@ -918,15 +916,12 @@
       const suggestions = [];
       const { r, j, matched, missing, score, hasJD } = data;
 
-      // General suggestions
       if (r.length < 100) suggestions.push('Your resume is quite short. Consider adding more details about your experience and achievements.');
       if (r.length > 500) suggestions.push('Your resume is very detailed. Try to condense it to 1-2 pages for better readability.');
       if (score < 50) suggestions.push('Your ATS score is low. Focus on including more relevant keywords from the job description.');
       if (hasJD && missing.length > 5) suggestions.push('You are missing several keywords from the job description. Add them to improve matching.');
       if (hasJD && matched.length === 0) suggestions.push('None of your keywords match the job description. Rework your resume to include key terms.');
       if (!hasJD) suggestions.push('Add a job description for more targeted suggestions and a higher ATS score.');
-
-      // Specific skill suggestions
       if (!r.some(w => ['experience','education','skills'].includes(w))) {
         suggestions.push('Add clear section headings like "Experience", "Education", and "Skills" to improve structure.');
       }
@@ -940,7 +935,6 @@
         suggestions.push('Replace "responsible for" with stronger action verbs like "led", "developed", "managed".');
       }
 
-      // Limit to top 5
       const topSuggestions = suggestions.slice(0, 5);
       if (topSuggestions.length === 0) {
         topSuggestions.push('Your resume looks great! No major suggestions at this time.');
@@ -1008,7 +1002,6 @@
         return;
       }
 
-      // Template styles
       const templateStyles = {
         modern: `
           body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; padding: 40px; }
