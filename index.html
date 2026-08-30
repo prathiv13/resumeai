@@ -11,7 +11,6 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3788898744825788" crossorigin="anonymous"></script>
 
   <style>
-    /* ===== all your existing styles – keep exactly as before ===== */
     :root {
       --bg: #080b14;
       --surface: #0f1422;
@@ -471,7 +470,7 @@
         <form>
           <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_TW3eMI6ACiDxKq" async> </script>
         </form>
-        <p style="font-size:.7rem;color:var(--muted);margin-top:6px;">After payment, you'll be upgraded automatically.</p>
+        <p style="font-size:.7rem;color:var(--muted);margin-top:6px;">You'll be upgraded automatically after payment.</p>
       </div>
     </div>
     <p class="notice" style="text-align:center;margin-top:18px">🔒 Secure payments powered by Razorpay.</p>
@@ -536,7 +535,7 @@
 
 <script>
   // ============================================================
-  // 1. GLOBAL STATE & HELPERS
+  // 1. GLOBAL STATE
   // ============================================================
   const FREE_LIMIT = 3;
   const PDFJS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
@@ -605,16 +604,21 @@
     section.style.display = (data && data.plan === 'pro') ? 'block' : 'none';
   }
 
+  async function refreshUserData() {
+    if (window.resumoraCurrentUser) {
+      const data = await fetchUserData(window.resumoraCurrentUser.uid);
+      currentUserData = data;
+      updateDashboard(window.resumoraCurrentUser, data);
+      updateScanInfo();
+      updateAiRewriteVisibility(data);
+    }
+  }
+
   function updateUIForAuth(user) {
     const tool = document.getElementById('resumeTool');
     if (user) {
       tool.style.display = 'block';
-      fetchUserData(user.uid).then(data => {
-        currentUserData = data;
-        updateDashboard(user, data);
-        updateScanInfo();
-        updateAiRewriteVisibility(data);
-      });
+      refreshUserData();
     } else {
       tool.style.display = 'none';
       currentUserData = null;
@@ -623,7 +627,36 @@
   }
 
   // ============================================================
-  // 3. ANALYZE RESUME (with scan counting)
+  // 3. AUTO-UPGRADE FROM PAYMENT (NO BACKEND!)
+  // ============================================================
+  async function checkPaymentAndUpgrade() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentId = urlParams.get('razorpay_payment_id');
+    const orderId = urlParams.get('razorpay_order_id');
+    const signature = urlParams.get('razorpay_signature');
+
+    // If we have payment details and the user is logged in, upgrade them
+    if (paymentId && orderId && window.resumoraCurrentUser) {
+      try {
+        const authApi = await window.resumoraFirebaseReady;
+        const uid = window.resumoraCurrentUser.uid;
+        const userRef = authApi.doc(authApi.db, 'users', uid);
+        await authApi.updateDoc(userRef, { plan: 'pro' });
+        // Refresh UI
+        await refreshUserData();
+        // Show success message
+        alert('🎉 Payment successful! You are now a Pro user. Enjoy unlimited scans and AI rewrite!');
+        // Clean URL without reloading
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } catch (e) {
+        console.error('Upgrade failed:', e);
+        alert('Payment detected but could not upgrade. Please contact support.');
+      }
+    }
+  }
+
+  // ============================================================
+  // 4. ANALYZE RESUME
   // ============================================================
   async function analyzeResume() {
     const resume = document.getElementById('resumeInput').value.trim();
@@ -644,7 +677,7 @@
       }
     }
 
-    // Run analysis (same logic as before – reused)
+    // Run analysis
     const r = words(resume), j = words(jd);
     const stop = new Set(['the','and','for','with','from','that','this','are','you','your','our','have','has','will','job','work','role','years','using','into','their','they','about','not','can','all','who','but','was','were','been','than','also','any','how','what']);
     const keywords = (j.length ? j : r).filter(x => !stop.has(x) && x.length > 3);
@@ -695,7 +728,7 @@
   }
 
   // ============================================================
-  // 4. AUTH DIALOG & LOGOUT
+  // 5. AUTH DIALOG & LOGOUT
   // ============================================================
   function openAuth(m) {
     mode = m;
@@ -725,14 +758,55 @@
   }
 
   // ============================================================
-  // 5. FILE UPLOAD (reuse your existing handlers)
+  // 6. FILE UPLOAD
   // ============================================================
-  // (Keep your extractResumeFile, drag & drop listeners from the original)
-  // For brevity I'll skip them here – you already have them.
-  // Make sure they are included in your actual file.
+  async function extractResumeFile(file) {
+    if (!file) return;
+    const name = file.name.toLowerCase();
+    const allowed = /\.(pdf|doc|docx)$/i.test(name);
+    if (!allowed) { alert('Please choose a PDF, DOC or DOCX file.'); return; }
+    document.getElementById('fileName').textContent = 'Reading: ' + file.name + '…';
+    try {
+      let text = '';
+      if (name.endsWith('.pdf')) {
+        const pdfjs = await import(PDFJS_CDN);
+        pdfjs.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+        const data = await file.arrayBuffer();
+        const pdf = await pdfjs.getDocument({ data }).promise;
+        const pages = [];
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          pages.push(content.items.map(item => item.str || '').join(' '));
+        }
+        text = pages.join('\n\n');
+      } else if (window.mammoth) {
+        const data = await file.arrayBuffer();
+        const result = await mammoth.extractRawText({ arrayBuffer: data });
+        text = result.value || '';
+      } else {
+        throw new Error('DOC/DOCX reader could not be loaded.');
+      }
+      text = text.replace(/\r/g, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+      if (!text || text.length < 20) throw new Error('No readable text was found. If the PDF is scanned/image-only, OCR is required.');
+      document.getElementById('resumeInput').value = text;
+      document.getElementById('fileName').textContent = '✓ ' + file.name + ' — text extracted';
+    } catch (err) {
+      document.getElementById('fileName').textContent = 'Could not read ' + file.name;
+      alert('Could not extract text from this file. ' + (err.message || 'Please try another PDF/DOC/DOCX.'));
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('fileInput').addEventListener('change', e => extractResumeFile(e.target.files[0]));
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'rgba(91,140,255,.8)'; });
+    dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'rgba(91,140,255,.35)'; });
+    dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.style.borderColor = 'rgba(91,140,255,.35)'; const f = e.dataTransfer.files[0]; if (f) extractResumeFile(f); });
+  });
 
   // ============================================================
-  // 6. ADMIN PANEL
+  // 7. ADMIN PANEL
   // ============================================================
   async function loadAdminUsers() {
     const list = document.getElementById('adminUsersList');
@@ -788,17 +862,14 @@
   };
 
   // ============================================================
-  // 7. EVENT BINDINGS & AUTH LISTENERS
+  // 8. EVENT BINDINGS & AUTH LISTENERS
   // ============================================================
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('fileInput').addEventListener('change', e => extractResumeFile(e.target.files[0]));
-    // ... (add your drag & drop listeners)
-  });
-
   document.addEventListener('resumora-auth-changed', async (e) => {
     const user = e.detail;
     if (user) {
       updateUIForAuth(user);
+      // Check for payment after login (in case the user paid and then logged in)
+      await checkPaymentAndUpgrade();
       if (document.getElementById('resumoraAdminPanel').style.display === 'flex') {
         loadAdminUsers();
       }
@@ -830,10 +901,17 @@
     }
     document.getElementById('resumoraAdminPanel').style.display = 'none';
   });
+
+  // Check for payment on page load (even before auth)
+  window.addEventListener('load', () => {
+    if (window.resumoraCurrentUser) {
+      checkPaymentAndUpgrade();
+    }
+  });
 </script>
 
 <!-- ============================================================
-     FIREBASE MODULE (with all needed functions)
+     FIREBASE MODULE (all-in-one)
      ============================================================ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -873,7 +951,6 @@
     document.dispatchEvent(new CustomEvent("resumora-auth-changed", { detail: user || null }));
   });
 
-  // Make signInGoogle available globally
   window.signInGoogle = async function() {
     try {
       const authApi = await window.resumoraFirebaseReady;
@@ -882,6 +959,8 @@
       alert('Google sign-in failed: ' + e.message);
     }
   };
+
+  window.resumoraFirebaseReady = Promise.resolve(window.resumoraAuth);
 </script>
 
 <!-- Hook up review and sign-in buttons -->
