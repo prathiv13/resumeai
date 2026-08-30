@@ -19,7 +19,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
-    /* ===== your existing styles – unchanged (kept compact) ===== */
+    /* ===== all styles – unchanged ===== */
     :root {
       --bg: #080b14;
       --surface: #0f1422;
@@ -372,7 +372,7 @@
     </div>
   </section>
 
-  <!-- ===== TOOL ===== -->
+  <!-- ===== TOOL (hidden until login) ===== -->
   <main class="tool" id="resumeTool" style="display:none;">
     <div class="card">
       <div class="grid">
@@ -415,7 +415,7 @@
       </div>
     </div>
 
-    <!-- ===== AI REWRITE SECTION (always visible, but download locked) ===== -->
+    <!-- AI Rewrite (always visible) -->
     <div id="rewriteSection" style="margin-top:18px;">
       <div class="card">
         <div class="label">✨ AI Resume Rewriter</div>
@@ -718,28 +718,22 @@
       }
     }
 
-    function updateUIForAuth(user) {
+    // ===== FIX: Show tool immediately, then fetch data =====
+    function showTool(user) {
       const tool = document.getElementById('resumeTool');
-      if (user) {
-        currentUser = user;
-        tool.style.display = 'block';
-        refreshUserData().then(() => {
-          showAuthSuccessToast(user);
-          document.getElementById('navLoginBtn').textContent = user.displayName || 'Account';
-          document.getElementById('navSignupBtn').style.display = 'none';
-          if (user.email === ADMIN_EMAIL) {
-            document.getElementById('resumoraAdminBtn').style.display = 'inline-block';
-          }
-        });
-      } else {
-        currentUser = null;
-        currentUserData = null;
-        tool.style.display = 'none';
-        document.getElementById('dashboard').classList.remove('show');
-        document.getElementById('navLoginBtn').textContent = 'Log in';
-        document.getElementById('navSignupBtn').style.display = 'inline-block';
-        document.getElementById('resumoraAdminBtn').style.display = 'none';
+      tool.style.display = 'block';
+      // Update nav
+      document.getElementById('navLoginBtn').textContent = user.displayName || 'Account';
+      document.getElementById('navSignupBtn').style.display = 'none';
+      if (user.email === ADMIN_EMAIL) {
+        document.getElementById('resumoraAdminBtn').style.display = 'inline-block';
       }
+      // Show toast
+      showAuthSuccessToast(user);
+      // Now fetch data in background
+      refreshUserData().then(() => {
+        // Data loaded, UI updated
+      }).catch(err => console.warn('Data fetch error:', err));
     }
 
     // ============================================================
@@ -835,7 +829,7 @@
     }
 
     // ============================================================
-    // AI REWRITE (Mock)
+    // AI REWRITE
     // ============================================================
     function rewriteResume() {
       const original = document.getElementById('resumeInput').value.trim();
@@ -1064,6 +1058,8 @@
     // ============================================================
     auth.onAuthStateChanged(async (user) => {
       if (user) {
+        currentUser = user;
+        // Ensure admin gets Pro
         if (user.email === ADMIN_EMAIL) {
           const userRef = db.collection('users').doc(user.uid);
           const doc = await userRef.get();
@@ -1081,8 +1077,11 @@
             });
           }
         }
-        updateUIForAuth(user);
+        // Show tool immediately
+        showTool(user);
+        // Check for payment upgrade
         await checkPaymentAndUpgrade();
+        // If admin panel is open, refresh
         if (document.getElementById('resumoraAdminPanel').style.display === 'flex') {
           loadAdminUsers();
         }
