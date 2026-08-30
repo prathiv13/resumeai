@@ -347,15 +347,16 @@ showAccount();
        users can only edit their own data, and admin privileges are enforced by rules.
   */
   const firebaseConfig = {
-    apiKey: "YOUR_FIREBASE_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.firebasestorage.app",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_FIREBASE_APP_ID"
+    apiKey: "AIzaSyDG3gzlvISNGySTCrzd3zuZyemrJSatp34",
+    authDomain: "resumeai-3c29d.firebaseapp.com",
+    projectId: "resumeai-3c29d",
+    storageBucket: "resumeai-3c29d.firebasestorage.app",
+    messagingSenderId: "746400832087",
+    appId: "1:746400832087:web:7baca2f3cb4792a0a92112",
+    measurementId: "G-PPN02969DJ"
   };
 
-  if (firebaseConfig.apiKey !== "YOUR_FIREBASE_API_KEY") {
+  if (firebaseConfig.apiKey) {
     try {
       const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
       const { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } =
@@ -401,7 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const submit = document.getElementById("submitReview");
   if (login) login.onclick = async () => {
     const a = window.resumoraAuth;
-    if (!a) return alert("Google Sign-In is not configured yet. Add your Firebase Web App configuration to index.html.");
+    if (!a) return alert("Google Sign-In is not available. Check that Google Authentication is enabled in your Firebase project.");
     try { await a.signInWithPopup(a.auth, a.provider); }
     catch (e) { alert(e.message || "Google Sign-In failed."); }
   };
