@@ -75,6 +75,59 @@ a{color:#9eb7ff;text-decoration:none}
 </style>
 </head>
 <body>
+<!-- Global Resumora Google Sign-In / Account UI -->
+<style>
+  #resumoraAccountBtn{
+    position:fixed;top:18px;right:20px;z-index:9998;
+    border:1px solid rgba(255,255,255,.16);background:rgba(15,15,20,.88);
+    color:inherit;padding:10px 15px;border-radius:999px;cursor:pointer;
+    backdrop-filter:blur(12px);font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.18)
+  }
+  #resumoraAccountBtn:hover{transform:translateY(-1px)}
+  #resumoraAuthModal{
+    display:none;position:fixed;inset:0;z-index:9999;
+    background:rgba(0,0,0,.62);align-items:center;justify-content:center;padding:20px
+  }
+  #resumoraAuthCard{
+    width:min(420px,100%);padding:30px;border-radius:24px;
+    background:#111217;color:#fff;border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 24px 80px rgba(0,0,0,.45);position:relative;text-align:center
+  }
+  #resumoraAuthClose{
+    position:absolute;right:15px;top:12px;border:0;background:transparent;color:#aaa;
+    font-size:26px;cursor:pointer
+  }
+  #googleGlobalLogin{
+    width:100%;padding:13px 16px;border-radius:12px;border:1px solid #ddd;
+    background:#fff;color:#111;font-weight:800;cursor:pointer;font-size:15px
+  }
+  #resumoraUserPanel{display:none;margin-top:18px;text-align:left;padding:14px;border-radius:14px;background:rgba(255,255,255,.05)}
+  #resumoraUserAvatar{width:42px;height:42px;border-radius:50%;vertical-align:middle;margin-right:10px}
+  #resumoraSignOut{margin-top:14px;width:100%;padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:transparent;color:inherit;cursor:pointer}
+  @media(max-width:600px){#resumoraAccountBtn{top:12px;right:12px;padding:8px 12px;font-size:12px}}
+</style>
+
+<button id="resumoraAccountBtn" type="button">Sign in / Sign up</button>
+
+<div id="resumoraAuthModal" role="dialog" aria-modal="true" aria-labelledby="resumoraAuthTitle">
+  <div id="resumoraAuthCard">
+    <button id="resumoraAuthClose" type="button" aria-label="Close">×</button>
+    <div style="font-size:38px;margin-bottom:8px">👤</div>
+    <h2 id="resumoraAuthTitle" style="margin:0 0 8px">Welcome to Resumora</h2>
+    <p style="opacity:.72;margin:0 0 22px">Sign in or create your account securely with Google.</p>
+    <button id="googleGlobalLogin" type="button">Continue with Google</button>
+    <div id="resumoraUserPanel">
+      <div>
+        <img id="resumoraUserAvatar" alt="" src="">
+        <strong id="resumoraUserName"></strong>
+        <div id="resumoraUserEmail" style="opacity:.68;margin:5px 0 0 52px;font-size:13px"></div>
+      </div>
+      <button id="resumoraSignOut" type="button">Sign out</button>
+    </div>
+    <p style="font-size:12px;opacity:.5;margin:18px 0 0">Your Google session is remembered on this device.</p>
+  </div>
+</div>
+
 
 <nav>
   <div class="logo">Resumora</div>
@@ -400,11 +453,9 @@ document.addEventListener("resumora-auth-changed", e => {
 document.addEventListener("DOMContentLoaded", () => {
   const login = document.getElementById("googleReviewLogin");
   const submit = document.getElementById("submitReview");
-  if (login) login.onclick = async () => {
-    const a = window.resumoraAuth;
-    if (!a) return alert("Google Sign-In is not available. Check that Google Authentication is enabled in your Firebase project.");
-    try { await a.signInWithPopup(a.auth, a.provider); }
-    catch (e) { alert(e.message || "Google Sign-In failed."); }
+  if (login) login.onclick = () => {
+    const accountBtn = document.getElementById("resumoraAccountBtn");
+    if (accountBtn) accountBtn.click();
   };
   if (submit) submit.onclick = async () => {
     const a = window.resumoraAuth, user = window.resumoraCurrentUser;
@@ -422,6 +473,26 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Thanks! Your review was submitted for moderation.");
     } catch(e) { alert(e.message || "Could not submit review."); }
   };
+});
+</script>
+
+<script>
+document.addEventListener("resumora-auth-changed", e=>{
+  const user=e.detail || null;
+  const status=document.getElementById("reviewAuthStatus");
+  const form=document.getElementById("reviewForm");
+  const login=document.getElementById("googleReviewLogin");
+  if(!status) return;
+
+  if(user){
+    status.textContent=`Signed in as ${user.displayName || user.email}`;
+    if(form) form.style.display="block";
+    if(login) login.style.display="none";
+  }else{
+    status.textContent="Sign in to leave a review.";
+    if(form) form.style.display="none";
+    if(login) login.style.display="inline-block";
+  }
 });
 </script>
 </body>
