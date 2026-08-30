@@ -73,8 +73,44 @@ footer b{color:var(--text)}
 small.muted{color:var(--muted)}
 a{color:#9eb7ff;text-decoration:none}
 </style>
+
+<style id="resumora-auth-toast-style">
+#resumoraAuthToast{
+  position:fixed;
+  top:78px;
+  right:22px;
+  z-index:10050;
+  display:none;
+  align-items:center;
+  gap:10px;
+  max-width:min(380px,calc(100vw - 44px));
+  padding:14px 18px;
+  border-radius:14px;
+  background:rgba(20,25,32,.96);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 14px 40px rgba(0,0,0,.35);
+  font-weight:700;
+  font-size:14px;
+  animation:resumoraToastIn .25s ease;
+}
+#resumoraAuthToast .toast-check{
+  width:25px;height:25px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#20b26b;color:#fff;font-size:15px;flex:0 0 auto;
+}
+@keyframes resumoraToastIn{
+  from{opacity:0;transform:translateY(-10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
 </head>
 <body>
+<div id="resumoraAuthToast" role="status" aria-live="polite">
+  <span class="toast-check">✓</span>
+  <span id="resumoraAuthToastText">Successfully logged in!</span>
+</div>
+
 
 <nav>
   <div class="logo">Resumora</div>
@@ -438,6 +474,9 @@ showAccount();
   function closeGlobalAuth() {
     const modal = $id("resumoraAuthModal");
     if (modal) modal.style.display = "none";
+    // The main Resumora login/signup dialog uses #authModal.
+    const mainModal = $id("authModal");
+    if (mainModal) mainModal.classList.remove("show");
   }
 
   async function signInGoogle() {
@@ -453,7 +492,7 @@ showAccount();
       console.error("Google sign-in failed:", error);
       const code = error && error.code ? " (" + error.code + ")" : "";
       if (status) status.textContent = "Google sign-in failed" + code;
-      alert("Google sign-in failed" + code + ". Make sure Google is enabled in Firebase Authentication and your Vercel domain is in Authorized domains.");
+      alert("Google sign-in failed" + code + ". Please check Firebase Authentication → Sign-in method → Google and Authorized domains.");
     } finally {
       buttons.forEach(b => { b.disabled = false; b.textContent = "Continue with Google"; });
     }
@@ -482,6 +521,14 @@ showAccount();
     if (accountBtn) accountBtn.addEventListener("click", openGlobalAuth);
     if (closeBtn) closeBtn.addEventListener("click", closeGlobalAuth);
     if (modal) modal.addEventListener("click", e => { if (e.target === modal) closeGlobalAuth(); });
+    // Escape-key close for auth dialog
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        const mainModal = $id("authModal");
+        if (mainModal) mainModal.classList.remove("show");
+        closeGlobalAuth();
+      }
+    });
     if (globalGoogle) globalGoogle.addEventListener("click", signInGoogle);
     if (mainGoogle) mainGoogle.addEventListener("click", signInGoogle);
     if (signOut) signOut.addEventListener("click", signOutUser);
@@ -518,12 +565,47 @@ showAccount();
     });
   });
 
-  document.addEventListener("resumora-auth-changed", e => setGlobalAccountUI(e.detail || null));
+  document.addEventListener("resumora-auth-changed", e => {
+    const user = e.detail || null;
+    setGlobalAccountUI(user);
+    // Once Google authentication succeeds, close whichever auth dialog is visible.
+    if (user) {
+      const mainModal = $id("authModal");
+      if (mainModal) mainModal.classList.remove("show");
+      const globalModal = $id("resumoraAuthModal");
+      if (globalModal) globalModal.style.display = "none";
+      if (typeof window.showAccount === "function") window.showAccount();
+    }
+  });
 
   document.addEventListener("resumora-auth-error", e => {
     console.error("Firebase auth initialization error:", e.detail);
   });
 })();
 </script>
+
+<script id="resumora-auth-success-toast">
+(function(){
+  let toastTimer;
+  function showAuthSuccessToast(user){
+    const toast=document.getElementById("resumoraAuthToast");
+    const text=document.getElementById("resumoraAuthToastText");
+    if(!toast) return;
+    const name=user && user.displayName ? user.displayName.split(" ")[0] : "";
+    if(text) text.textContent = name
+      ? `Successfully logged in, ${name}!`
+      : "Successfully logged in!";
+    toast.style.display="flex";
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>{ toast.style.display="none"; },3500);
+  }
+
+  // Firebase's auth-state event fires after successful Google sign-in/sign-up.
+  document.addEventListener("resumora-auth-changed", function(e){
+    if(e.detail) showAuthSuccessToast(e.detail);
+  });
+})();
+</script>
+
 </body>
 </html>
