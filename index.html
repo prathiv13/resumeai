@@ -294,9 +294,9 @@ async function startPayment(plan='pro') {
   };
   const selected = plans[plan] || plans.pro;
   try {
-    const configResponse = await fetch('/api/config');
-    if (!configResponse.ok) throw new Error('Unable to load payment configuration.');
-    const config = await configResponse.json();
+    // Razorpay Key ID is a public checkout identifier; the Key Secret must stay
+    // on the Vercel serverless backend and must never be placed in this file.
+    const razorpayKeyId = 'rzp_test_TW0ehUWp8auYOr';
 
     const orderResponse = await fetch('/api/create-order', {
       method: 'POST',
@@ -304,10 +304,15 @@ async function startPayment(plan='pro') {
       body: JSON.stringify({ amount: selected.amount, currency: 'INR', receipt: `resumora_${Date.now()}` })
     });
     const orderData = await orderResponse.json();
-    if (!orderResponse.ok) throw new Error(orderData.error || 'Unable to create payment order.');
+    if (!orderResponse.ok) {
+      if (orderResponse.status === 404) {
+        throw new Error('Payment backend is not deployed. Add /api/create-order and /api/verify-payment to the same Vercel project.');
+      }
+      throw new Error(orderData.error || 'Unable to create payment order.');
+    }
 
     const options = {
-      key: config.key_id,
+      key: razorpayKeyId,
       amount: orderData.amount,
       currency: orderData.currency,
       name: 'Resumora',
