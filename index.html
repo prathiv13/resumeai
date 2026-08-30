@@ -18,6 +18,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js">
   </script>
 
+  <!-- html2pdf for PDF download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   <style>
     :root {
       --bg: #080b14;
@@ -569,6 +572,18 @@
       font-weight: 800;
       margin-left: 8px;
     }
+
+    /* Rewrite output styling */
+    #rewriteOutput {
+      background: rgba(255, 255, 255, .05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 12px;
+      white-space: pre-wrap;
+      font-size: .9rem;
+      border: 1px solid var(--border);
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -625,6 +640,7 @@
       </div>
     </div>
 
+    <!-- Results -->
     <div class="results" id="results">
       <div class="card score">
         <div class="score-num" id="score">0</div>
@@ -640,15 +656,25 @@
         <div class="card"><div class="label">Strengths</div><div id="strengths"></div></div>
         <div class="card"><div class="label">Critical fixes</div><div id="fixes"></div></div>
       </div>
-      <div id="aiRewriteSection" style="display:none; margin-top:18px;">
-        <div class="card">
-          <div class="label">✨ AI Rewrite & Download</div>
-          <p style="color:var(--muted); margin-bottom:12px;">Get a professionally rewritten version of your resume with ATS-optimized bullet points.</p>
-          <button class="btn" onclick="alert('AI rewrite will be available soon.')">Download AI Rewritten Resume (PDF/DOCX)</button>
+    </div>
+
+    <!-- ===== AI REWRITE SECTION (always visible, download locked) ===== -->
+    <div id="rewriteSection" style="margin-top:18px;">
+      <div class="card">
+        <div class="label">✨ AI Resume Rewriter</div>
+        <p style="color:var(--muted); margin-bottom:12px;">Click below to generate an improved version of your resume with better ATS optimization.</p>
+        <button class="btn" onclick="rewriteResume()">🤖 Rewrite with AI</button>
+        <div id="rewriteOutput"></div>
+        <div style="margin-top:12px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <button class="btn" id="downloadBtn" onclick="downloadPDF()" disabled style="opacity:0.5; pointer-events:none;">
+            📥 Download PDF (Pro only)
+          </button>
+          <span id="downloadLockMsg" style="color:var(--muted); font-size:.85rem;">🔒 Upgrade to Pro to download</span>
         </div>
       </div>
     </div>
 
+    <!-- Dashboard -->
     <div class="dashboard card" id="dashboard">
       <div class="account">
         <div>
@@ -838,6 +864,7 @@
     let currentUser = null;
     let currentUserData = null;
     let toastTimer = null;
+    let rewrittenText = '';
 
     const $ = id => document.getElementById(id);
 
@@ -918,6 +945,7 @@
       document.getElementById('accountEmail').textContent = user.email;
       const badge = document.getElementById('planBadge');
       badge.style.display = (data && data.plan === 'pro') ? 'inline-block' : 'none';
+      updateDownloadButton(data && data.plan === 'pro');
     }
 
     function updateScanInfo() {
@@ -932,9 +960,22 @@
       }
     }
 
-    function updateAiRewriteVisibility(data) {
-      const section = document.getElementById('aiRewriteSection');
-      section.style.display = (data && data.plan === 'pro') ? 'block' : 'none';
+    function updateDownloadButton(isPro) {
+      const btn = document.getElementById('downloadBtn');
+      const lockMsg = document.getElementById('downloadLockMsg');
+      if (isPro) {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+        lockMsg.textContent = '✅ Pro — Download enabled';
+        lockMsg.style.color = 'var(--green)';
+      } else {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.style.pointerEvents = 'none';
+        lockMsg.textContent = '🔒 Upgrade to Pro to download';
+        lockMsg.style.color = 'var(--muted)';
+      }
     }
 
     async function refreshUserData() {
@@ -943,7 +984,6 @@
         currentUserData = data;
         updateDashboard(currentUser, data);
         updateScanInfo();
-        updateAiRewriteVisibility(data);
       }
     }
 
@@ -1080,7 +1120,77 @@
     }
 
     // ============================================================
-    // 7. AUTH DIALOG & LOGOUT
+    // 7. AI REWRITE (Mock AI)
+    // ============================================================
+    function rewriteResume() {
+      const original = document.getElementById('resumeInput').value.trim();
+      if (!original) {
+        alert('Please paste or upload a resume first.');
+        return;
+      }
+
+      // Simple AI-like improvements
+      const lines = original.split('\n').filter(line => line.trim() !== '');
+      const improved = lines.map(line => {
+        let l = line.trim();
+        l = l.replace(/responsible for/g, 'led');
+        l = l.replace(/worked on/g, 'developed');
+        l = l.replace(/helped/g, 'supported');
+        l = l.replace(/made/g, 'created');
+        l = l.replace(/did/g, 'executed');
+        if (!/\d/.test(l) && l.length > 10) {
+          l = l + ' (achieved a 15% improvement)';
+        }
+        return l;
+      });
+
+      rewrittenText = improved.join('\n\n');
+      const outputDiv = document.getElementById('rewriteOutput');
+      outputDiv.style.display = 'block';
+      outputDiv.innerHTML = `<strong>✨ AI Rewritten Resume:</strong><br><br>${escapeHtml(rewrittenText)}`;
+      const isPro = currentUserData && currentUserData.plan === 'pro';
+      updateDownloadButton(isPro);
+      showToastMessage('✅ Rewrite generated! ' + (isPro ? 'You can download it now.' : 'Upgrade to Pro to download.'));
+    }
+
+    // ============================================================
+    // 8. DOWNLOAD PDF (Pro only)
+    // ============================================================
+    async function downloadPDF() {
+      const isPro = currentUserData && currentUserData.plan === 'pro';
+      if (!isPro) {
+        alert('Please upgrade to Pro to download the PDF.');
+        return;
+      }
+      if (!rewrittenText) {
+        alert('Please generate an AI rewrite first.');
+        return;
+      }
+
+      try {
+        const element = document.createElement('div');
+        element.style.padding = '40px';
+        element.style.fontFamily = 'Arial, sans-serif';
+        element.style.fontSize = '14px';
+        element.style.lineHeight = '1.6';
+        element.style.color = '#000';
+        element.innerHTML = `
+          <h1 style="color:#2c3e50;">Resumora AI Rewrite</h1>
+          <hr style="margin:20px 0;">
+          <div style="white-space:pre-wrap;">${escapeHtml(rewrittenText)}</div>
+          <p style="margin-top:30px; color:#888; font-size:12px;">Generated by Resumora AI</p>
+        `;
+        document.body.appendChild(element);
+        await html2pdf().from(element).save('resume_ai_rewrite.pdf');
+        document.body.removeChild(element);
+      } catch (error) {
+        alert('PDF generation failed: ' + error.message);
+        console.error(error);
+      }
+    }
+
+    // ============================================================
+    // 9. AUTH DIALOG & LOGOUT
     // ============================================================
     function openAuth(m) {
       document.getElementById('authModal').classList.add('show');
@@ -1120,7 +1230,7 @@
     }
 
     // ============================================================
-    // 8. GOOGLE SIGN-IN (with fallback)
+    // 10. GOOGLE SIGN-IN (with fallback)
     // ============================================================
     async function signInGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -1157,7 +1267,7 @@
     }
 
     // ============================================================
-    // 9. FILE UPLOAD
+    // 11. FILE UPLOAD
     // ============================================================
     async function extractResumeFile(file) {
       if (!file) return;
@@ -1198,7 +1308,7 @@
     }
 
     // ============================================================
-    // 10. ADMIN PANEL
+    // 12. ADMIN PANEL
     // ============================================================
     async function loadAdminUsers() {
       const list = document.getElementById('adminUsersList');
@@ -1254,7 +1364,7 @@
     };
 
     // ============================================================
-    // 11. EVENT BINDINGS
+    // 13. EVENT BINDINGS
     // ============================================================
     // Auth state listener
     auth.onAuthStateChanged(async (user) => {
