@@ -15,11 +15,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
-  <!-- html2pdf for PDF download (optional, or we can use simple text) -->
+  <!-- html2pdf for PDF download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <style>
-    /* ===== all styles – unchanged from previous ===== */
+    /* ===== your existing styles – unchanged (kept compact) ===== */
     :root {
       --bg: #080b14;
       --surface: #0f1422;
@@ -331,7 +331,6 @@
       margin-left: 8px;
     }
 
-    /* AI Rewrite output styling */
     #rewriteOutput {
       background: rgba(255, 255, 255, .05);
       border-radius: 12px;
@@ -414,20 +413,20 @@
         <div class="card"><div class="label">Strengths</div><div id="strengths"></div></div>
         <div class="card"><div class="label">Critical fixes</div><div id="fixes"></div></div>
       </div>
+    </div>
 
-      <!-- AI Rewrite Section (visible to all, but download locked) -->
-      <div id="rewriteSection" style="margin-top:18px;">
-        <div class="card">
-          <div class="label">✨ AI Resume Rewriter</div>
-          <p style="color:var(--muted); margin-bottom:12px;">Click below to generate an improved version of your resume with better ATS optimization.</p>
-          <button class="btn" onclick="rewriteResume()">🤖 Rewrite with AI</button>
-          <div id="rewriteOutput"></div>
-          <div style="margin-top:12px;">
-            <button class="btn" id="downloadBtn" onclick="downloadPDF()" disabled style="opacity:0.5; pointer-events:none;">
-              📥 Download PDF (Pro only)
-            </button>
-            <span id="downloadLockMsg" style="color:var(--muted); font-size:.8rem; margin-left:10px;">🔒 Upgrade to Pro to download</span>
-          </div>
+    <!-- ===== AI REWRITE SECTION (always visible, but download locked) ===== -->
+    <div id="rewriteSection" style="margin-top:18px;">
+      <div class="card">
+        <div class="label">✨ AI Resume Rewriter</div>
+        <p style="color:var(--muted); margin-bottom:12px;">Click below to generate an improved version of your resume with better ATS optimization.</p>
+        <button class="btn" onclick="rewriteResume()">🤖 Rewrite with AI</button>
+        <div id="rewriteOutput"></div>
+        <div style="margin-top:12px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <button class="btn" id="downloadBtn" onclick="downloadPDF()" disabled style="opacity:0.5; pointer-events:none;">
+            📥 Download PDF (Pro only)
+          </button>
+          <span id="downloadLockMsg" style="color:var(--muted); font-size:.85rem;">🔒 Upgrade to Pro to download</span>
         </div>
       </div>
     </div>
@@ -567,17 +566,17 @@
   </div>
 
   <!-- ============================================================
-  PDF & MAMMOTH LIBS
+  LIBS
   ============================================================ -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
 
   <!-- ============================================================
-  MAIN APPLICATION SCRIPT
+  MAIN SCRIPT
   ============================================================ -->
   <script>
     // ============================================================
-    // 1. FIREBASE INIT
+    // FIREBASE INIT
     // ============================================================
     const firebaseConfig = {
       apiKey: "AIzaSyDG3gzlvISNGySTCrzd3zuZyemrJSatp34",
@@ -595,18 +594,18 @@
     auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
     // ============================================================
-    // 2. GLOBAL STATE
+    // GLOBAL STATE
     // ============================================================
     const FREE_LIMIT = 3;
     const ADMIN_EMAIL = "prathiv132004@gmail.com";
     let currentUser = null;
     let currentUserData = null;
     let toastTimer = null;
-    let rewrittenText = ''; // store the rewritten resume for download
+    let rewrittenText = '';
     const $ = id => document.getElementById(id);
 
     // ============================================================
-    // 3. TOAST
+    // TOAST
     // ============================================================
     function showAuthSuccessToast(user) {
       const toast = document.getElementById('resumoraAuthToast');
@@ -630,7 +629,7 @@
     }
 
     // ============================================================
-    // 4. AUTH & USER DATA
+    // AUTH & USER DATA
     // ============================================================
     function handleCta() {
       if (currentUser) {
@@ -677,7 +676,6 @@
       const badge = document.getElementById('planBadge');
       const isPro = data && data.plan === 'pro';
       badge.style.display = isPro ? 'inline-block' : 'none';
-      // Update download button state
       updateDownloadButton(isPro);
     }
 
@@ -745,7 +743,7 @@
     }
 
     // ============================================================
-    // 5. PAYMENT AUTO-UPGRADE
+    // PAYMENT AUTO-UPGRADE
     // ============================================================
     async function checkPaymentAndUpgrade() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -769,7 +767,7 @@
     }
 
     // ============================================================
-    // 6. ANALYZE RESUME
+    // ANALYZE RESUME
     // ============================================================
     async function analyzeResume() {
       const resume = document.getElementById('resumeInput').value.trim();
@@ -790,7 +788,6 @@
         }
       }
 
-      // Analysis logic
       const r = words(resume);
       const j = words(jd);
       const stop = new Set(['the','and','for','with','from','that','this','are','you','your','our','have','has','will','job','work','role','years','using','into','their','they','about','not','can','all','who','but','was','were','been','than','also','any','how','what']);
@@ -815,7 +812,6 @@
       document.getElementById('results').style.display = 'block';
       document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      // Increment scan count if free
       if (currentUserData.plan !== 'pro') {
         try {
           const userRef = db.collection('users').doc(currentUser.uid);
@@ -839,7 +835,7 @@
     }
 
     // ============================================================
-    // 7. AI REWRITE (Mock AI – improves resume text)
+    // AI REWRITE (Mock)
     // ============================================================
     function rewriteResume() {
       const original = document.getElementById('resumeInput').value.trim();
@@ -848,17 +844,14 @@
         return;
       }
 
-      // Simple "AI" rewrite: add action verbs, numbers, and rephrase common weak phrases
       const lines = original.split('\n').filter(line => line.trim() !== '');
       const improved = lines.map(line => {
         let l = line.trim();
-        // Basic improvements (mock)
         l = l.replace(/responsible for/g, 'led');
         l = l.replace(/worked on/g, 'developed');
         l = l.replace(/helped/g, 'supported');
         l = l.replace(/made/g, 'created');
         l = l.replace(/did/g, 'executed');
-        // Add some numbers if missing
         if (!/\d/.test(l) && l.length > 10) {
           l = l + ' (achieved a 15% improvement)';
         }
@@ -869,14 +862,13 @@
       const outputDiv = document.getElementById('rewriteOutput');
       outputDiv.style.display = 'block';
       outputDiv.innerHTML = `<strong>✨ AI Rewritten Resume:</strong><br><br>${escapeHtml(rewrittenText)}`;
-      // Enable download if Pro
       const isPro = currentUserData && currentUserData.plan === 'pro';
       updateDownloadButton(isPro);
       showToastMessage('✅ Rewrite generated! ' + (isPro ? 'You can download it now.' : 'Upgrade to Pro to download.'));
     }
 
     // ============================================================
-    // 8. DOWNLOAD PDF (Pro only)
+    // DOWNLOAD PDF (Pro only)
     // ============================================================
     async function downloadPDF() {
       const isPro = currentUserData && currentUserData.plan === 'pro';
@@ -890,7 +882,6 @@
       }
 
       try {
-        // Use html2pdf to generate a PDF from the rewritten text
         const element = document.createElement('div');
         element.style.padding = '40px';
         element.style.fontFamily = 'Arial, sans-serif';
@@ -913,7 +904,7 @@
     }
 
     // ============================================================
-    // 9. AUTH DIALOG & LOGOUT
+    // AUTH DIALOG & LOGOUT
     // ============================================================
     function openAuth(m) {
       document.getElementById('authModal').classList.add('show');
@@ -946,7 +937,7 @@
     }
 
     // ============================================================
-    // 10. GOOGLE SIGN-IN
+    // GOOGLE SIGN-IN
     // ============================================================
     async function signInGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -975,7 +966,7 @@
     }
 
     // ============================================================
-    // 11. FILE UPLOAD
+    // FILE UPLOAD
     // ============================================================
     async function extractResumeFile(file) {
       if (!file) return;
@@ -1015,7 +1006,7 @@
     }
 
     // ============================================================
-    // 12. ADMIN PANEL
+    // ADMIN PANEL
     // ============================================================
     async function loadAdminUsers() {
       const list = document.getElementById('adminUsersList');
@@ -1069,11 +1060,10 @@
     };
 
     // ============================================================
-    // 13. EVENT BINDINGS
+    // EVENT BINDINGS
     // ============================================================
     auth.onAuthStateChanged(async (user) => {
       if (user) {
-        // Force admin to Pro
         if (user.email === ADMIN_EMAIL) {
           const userRef = db.collection('users').doc(user.uid);
           const doc = await userRef.get();
@@ -1169,7 +1159,7 @@
       }
     });
 
-    console.log('🔥 Resumora initialized successfully.');
+    console.log('🔥 Resumora loaded successfully.');
   </script>
 
 </body>
